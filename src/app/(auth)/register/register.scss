@@ -1,0 +1,184 @@
+// Variables
+$effect-color: rgba(167, 139, 250, 1);
+$primary-color: rgba(17, 24, 39, 1);
+$text-light: rgba(243, 244, 246, 1);
+$text-gray: rgba(156, 163, 175, 1);
+$border-color: rgba(55, 65, 81, 1);
+
+// Mixins
+@mixin input-styles {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid $border-color;
+  outline: none;
+  background-color: $primary-color;
+  padding: 12px 16px;
+  color: $text-light;
+  transition: border-color 0.3s ease-in-out;
+
+  &:focus {
+    border-color: $effect-color;
+  }
+}
+
+@mixin button-styles {
+  display: block;
+  width: 100%;
+  background-color: $effect-color;
+  padding: 12px;
+  text-align: center;
+  color: $primary-color;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+
+  &:hover {
+    background-color: darken($effect-color, 10%);
+  }
+}
+
+@mixin responsive($breakpoint) {
+  @media (max-width: $breakpoint) {
+    @content;
+  }
+}
+
+// Base styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.register-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .form-container {
+    width: 420px;
+    border-radius: 12px;
+    background-color: $primary-color;
+    padding: 32px;
+    color: $text-light;
+
+    .title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .form {
+      margin-top: 24px;
+
+      .input-group {
+        margin-top: 4px;
+        font-size: 14px;
+
+        label {
+          display: block;
+          color: $text-gray;
+          margin-bottom: 8px;
+        }
+
+        input {
+          @include input-styles;
+        }
+
+        .group-password {
+          position: relative;
+          input {
+            padding-right: 32px;
+          }
+
+          .icon-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
+    .forgot {
+      display: flex;
+      justify-content: flex-end;
+      font-size: 12px;
+      color: $text-gray;
+      margin: 8px 0 14px;
+
+      a {
+        color: $text-light;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .sign {
+      margin-top: 20px;
+      @include button-styles;
+    }
+
+    .login-message {
+      display: flex;
+      align-items: center;
+      padding-top: 16px;
+
+      .line {
+        height: 1px;
+        flex: 1;
+        background-color: $border-color;
+      }
+
+      .message {
+        padding: 0 12px;
+        font-size: 14px;
+        color: $text-gray;
+
+        a {
+          color: $text-light;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+
+  // Responsive adjustments
+  @include responsive(1024px) {
+    @media (orientation: landscape) {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+    .form-container {
+      max-width: 400px;
+      padding: 28px;
+    }
+  }
+
+  @include responsive(768px) {
+    flex-direction: column;
+    padding: 20px;
+
+    .form-container {
+      width: 100%;
+      max-width: 360px;
+    }
+    @media (orientation: landscape) {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+  }
+}
