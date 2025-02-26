@@ -1,7 +1,7 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import storageSession from "redux-persist/lib/storage/session"; // Session Storage
 import { persistReducer, persistStore } from "redux-persist";
-import { reducers } from "./slices";
+import { reducers, persisted } from "./slices";
 import { reducerApi, apiSlices } from "./services";
 
 // Redux Persist config
@@ -13,12 +13,13 @@ const authPersistConfig = {
 // Persisted auth reducer
 const persistedAuthReducer = persistReducer(
   authPersistConfig,
-  reducers.authReducer
+  persisted.authReducer
 );
 // Combine all reducers
 const rootReducer = combineReducers({
   ...reducerApi,
   authData: persistedAuthReducer,
+  ...reducers,
 });
 
 // config middleware

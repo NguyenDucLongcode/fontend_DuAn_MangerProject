@@ -1,0 +1,204 @@
+@mixin responsive($breakpoint) {
+  @media (max-width: $breakpoint) {
+    @content;
+  }
+}
+
+.tableWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100%;
+
+  //content-top
+  .content-top {
+    margin-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    // filter
+    .filterWrapper {
+      position: relative;
+      width: 100%;
+      max-width: 350px;
+      display: flex;
+      align-items: center;
+      input {
+        flex: 1;
+        width: 100%;
+        padding: 8px 50px 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        transition: border-color 0.3s ease;
+        &:focus {
+          border-color: #007bff;
+          outline: none;
+          box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+      }
+      // filter icon
+      .bg-icon {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: #e7e4e4;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 40px;
+        height: 38px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      @include responsive(480px) {
+        flex-direction: column;
+        align-items: center;
+
+        .filterWrapper {
+          width: 100%;
+          max-width: 100%;
+        }
+      }
+    }
+  }
+  // table
+  .reactTable {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 5px 0;
+    // table header
+    thead {
+      tr {
+        background-color: #009879;
+        color: #ffffff;
+        font-weight: bold;
+      }
+    }
+
+    th,
+    td {
+      padding: 12px 15px;
+      border: 1px solid #dddddd;
+      word-wrap: break-word;
+    }
+
+    tbody tr:nth-of-type(even) {
+      background-color: #f9f9f9;
+    }
+
+    tbody tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    //responsive table
+    @include responsive(768px) {
+      font-size: 14px;
+      th,
+      td {
+        padding: 10px 12px;
+      }
+      thead tr {
+        font-size: 15px;
+      }
+    }
+
+    @include responsive(480px) {
+      display: block;
+      thead {
+        display: none;
+      }
+      tbody {
+        display: block;
+        tr {
+          display: flex;
+          flex-direction: column;
+          margin-bottom: 15px;
+          border-bottom: 1px solid #dddddd;
+          td {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border: none;
+            &:before {
+              content: attr(data-label);
+              font-weight: bold;
+              text-transform: capitalize;
+              color: #009879;
+              flex: 0 0 40%;
+            }
+          }
+        }
+      }
+    }
+  }
+  // pagination
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+
+    button {
+      padding: 8px 16px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      &:hover {
+        background-color: #45a049;
+      }
+      &:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+    }
+    span {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    // show per page
+    select {
+      padding: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    //go to page
+    .page-input {
+      display: flex;
+      align-items: center;
+      span {
+        font-weight: 500;
+      }
+      input {
+        margin-left: 5px;
+        padding-left: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        height: 35px;
+        width: 80px;
+      }
+    }
+    // responsive pagination
+    @include responsive(768px) {
+      flex-direction: column;
+      gap: 15px;
+      button,
+      select {
+        width: 100%;
+      }
+      span {
+        font-size: 14px;
+      }
+    }
+  }
+}

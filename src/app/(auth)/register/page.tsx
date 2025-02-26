@@ -110,12 +110,12 @@ const Register: React.FC = () => {
     // Call API for registration
     try {
       const res = await userRegister(dataSubmit).unwrap();
-      if (res && res.data.errCode === 0) {
-        toast.success(res.data.message);
+      if (res && res.errCode === 0) {
+        toast.success(res.message);
         setDataSubmit({ email: "", password: "", phone: "", userName: "" });
         router.replace("/login");
       } else {
-        toast.error(res.data.message);
+        toast.error(res.message);
       }
     } catch (error) {
       toast.error("Đã có lỗi xảy ra, vui lòng thử lại!");
@@ -144,9 +144,9 @@ const Register: React.FC = () => {
           ))}
 
           {/* Password field */}
-          <div className="input-group">
+          <div className="group-password">
             <label htmlFor="passwordRegister">Password</label>
-            <div className="group-password">
+            <div className="field-password">
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"

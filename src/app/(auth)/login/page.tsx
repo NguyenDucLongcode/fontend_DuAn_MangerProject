@@ -9,19 +9,6 @@ import { apiHooks } from "@/redux/services";
 import { actions } from "@/redux/slices";
 import { useDispatch } from "react-redux";
 
-interface LoginFormFields {
-  email: string;
-  password: string;
-}
-
-interface InputField {
-  label: string;
-  type: string;
-  name: keyof LoginFormFields;
-  id: string;
-  placeholder: string;
-}
-
 const Login: React.FC = () => {
   // logic redux
   const dispatch = useDispatch();
@@ -87,7 +74,7 @@ const Login: React.FC = () => {
         dispatch(actions.auth.login(res.data.dataUser));
         router.replace("/");
       } else {
-        toast.error(res.message);
+        toast.error(res.data.message);
       }
     } catch (error) {
       toast.error("Đã có lỗi xảy ra, vui lòng thử lại!");
@@ -125,9 +112,9 @@ const Login: React.FC = () => {
           ))}
 
           {/* Password Input */}
-          <div className="input-group">
+          <div className="group-password">
             <label htmlFor="passwordLogin">Password</label>
-            <div className="group-password">
+            <div className="field-password">
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"

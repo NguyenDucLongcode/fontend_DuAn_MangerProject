@@ -75,7 +75,8 @@ $border-color: rgba(55, 65, 81, 1);
     .form {
       margin-top: 24px;
 
-      .input-group {
+      .input-group,
+      .group-password {
         margin-top: 4px;
         font-size: 14px;
 
@@ -89,7 +90,7 @@ $border-color: rgba(55, 65, 81, 1);
           @include input-styles;
         }
 
-        .group-password {
+        .field-password {
           position: relative;
           input {
             padding-right: 32px;

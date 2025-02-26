@@ -1,10 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface AccountState {
-  account: object;
-  isAuthenticated: boolean;
-}
-
 const initialState: AccountState = {
   account: {},
   isAuthenticated: false,
