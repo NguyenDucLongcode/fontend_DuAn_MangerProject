@@ -4,6 +4,8 @@ import {
   useDeleteUserMutation,
   useGetAllGroupQuery,
   useCreateUserMutation,
+  useGetUserByIdQuery,
+  useUpdateUserMutation,
 } from "./userApi";
 
 const apiHooks = {
@@ -15,6 +17,8 @@ const apiHooks = {
   DeleteUser: useDeleteUserMutation,
   GetAllGroup: useGetAllGroupQuery,
   CreateUser: useCreateUserMutation,
+  GetUserById: useGetUserByIdQuery,
+  UpdateUser: useUpdateUserMutation,
 };
 
 export default apiHooks;

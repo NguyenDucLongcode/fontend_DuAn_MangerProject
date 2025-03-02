@@ -69,7 +69,7 @@ const TableUser = () => {
               View
             </button>
             <button
-              onClick={() => handleAction("Edit", row.original)}
+              onClick={() => handleAction("editUser", row.original)}
               className="btn btn-warning mx-3"
             >
               Edit
@@ -122,12 +122,15 @@ const TableUser = () => {
       if (action === "deleteUser") {
         dispatch(actions.modalUser.show({ data: user, type: "deleteUser" }));
       }
+      if (action === "editUser") {
+        dispatch(actions.modalUser.show({ data: user, type: "editUser" }));
+      }
     },
     [dispatch]
   );
 
   const handleCreate = useCallback(() => {
-    dispatch(actions.modalUser.show({ data: {}, type: "createUser" }));
+    dispatch(actions.modalUser.showCreateModal());
   }, [dispatch]);
 
   //useEffects

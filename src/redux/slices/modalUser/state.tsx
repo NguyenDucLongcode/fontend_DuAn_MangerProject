@@ -1,7 +1,8 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { MoDalUserState } from "./types";
 
-const initialState: MoDalState = {
+export const initialState: MoDalUserState = {
   data: {},
+  userId: 0,
   type: "",
   showPassword: false,
   dataCreateUser: {
@@ -13,7 +14,8 @@ const initialState: MoDalState = {
     sex: "",
     groupId: "",
   },
-  formFields: [
+
+  formFieldsCreate: [
     [
       {
         label: "Email",
@@ -51,33 +53,38 @@ const initialState: MoDalState = {
       },
     ],
   ],
-};
+  formFieldsUpdate: [
+    [
+      {
+        label: "UserName",
+        type: "text",
+        placeholder: "Enter your userName",
+        name: "name",
+      },
+      {
+        label: "Phone",
+        type: "number",
+        placeholder: "Enter your phone",
+        name: "phone",
+      },
+    ],
+    [
+      {
+        label: "Address",
+        type: "text",
+        placeholder: "Enter your address",
+        name: "address",
+      },
+    ],
+  ],
 
-const modalUserSlice = createSlice({
-  name: "modal",
-  initialState,
-  reducers: {
-    show: (
-      state,
-      action: PayloadAction<{ data: User | object; type: string }>
-    ) => {
-      state.data = action.payload.data;
-      state.type = action.payload.type;
-    },
-    hide: (state) => {
-      state.data = {};
-      state.type = "";
-    },
-    togglePassword: (state) => {
-      state.showPassword = !state.showPassword;
-    },
-
-    createUser: (state, action: PayloadAction<Partial<CreateUserType>>) => {
-      state.dataCreateUser = { ...state.dataCreateUser, ...action.payload };
-    },
+  dataUpdateUser: {
+    id: null,
+    name: "",
+    phone: "",
+    address: "",
+    isCustomer: "",
+    sex: "",
+    groupId: null,
   },
-});
-
-export const { show, hide, createUser, togglePassword } =
-  modalUserSlice.actions;
-export default modalUserSlice.reducer;
+};

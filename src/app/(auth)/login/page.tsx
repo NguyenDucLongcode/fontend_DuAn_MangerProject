@@ -1,13 +1,13 @@
 "use client";
 import "./page.scss";
-import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { apiHooks } from "@/redux/services";
 import { actions } from "@/redux/slices";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const Login: React.FC = () => {
   // logic redux
@@ -15,32 +15,16 @@ const Login: React.FC = () => {
   const router = useRouter();
   const [userLogin] = apiHooks.Login();
 
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [dataSubmit, setDataSubmit] = useState<LoginFormFields>({
-    email: "",
-    password: "",
-  });
-
-  // List input fields
-  const inputFields: InputField[] = [
-    {
-      label: "Email",
-      type: "email",
-      name: "email",
-      id: "emailLogin",
-      placeholder: "Enter your email",
-    },
-  ];
+  const { inputLoginField, dataSubmitLogin, showPassword } = useSelector(
+    (state: RootState) => state.authFlowData
+  );
 
   // Handler for input change
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
     const { name, value } = event.target;
-    setDataSubmit((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    dispatch(actions.authFlow.getDataInputLogin({ [name]: value }));
   };
 
   // Handle key down event
@@ -60,17 +44,19 @@ const Login: React.FC = () => {
     if (event) event.preventDefault();
 
     // Validate form
-    if (!dataSubmit.email || !dataSubmit.password) {
+    if (!dataSubmitLogin.email || !dataSubmitLogin.password) {
       toast.error("Vui lòng nhập email và mật khẩu của bạn");
       return;
     }
 
     // Call API login
     try {
-      const res = await userLogin(dataSubmit).unwrap();
+      const res = await userLogin(dataSubmitLogin).unwrap();
       if (res && res.data.errCode === 0) {
         toast.success(res.data.message);
-        setDataSubmit({ email: "", password: "" });
+        dispatch(
+          actions.authFlow.getDataInputLogin({ email: "", password: "" })
+        );
         dispatch(actions.auth.login(res.data.dataUser));
         router.replace("/");
       } else {
@@ -97,7 +83,7 @@ const Login: React.FC = () => {
         <p className="title">Login</p>
         <form className="form" onSubmit={handleSubmit}>
           {/* Email Input */}
-          {inputFields.map((field, index) => (
+          {inputLoginField.map((field, index) => (
             <div className="input-group" key={`input-login-${index}`}>
               <label htmlFor={field.id}>{field.label}</label>
               <input
@@ -105,7 +91,7 @@ const Login: React.FC = () => {
                 name={field.name}
                 id={field.id}
                 placeholder={field.placeholder}
-                value={dataSubmit[field.name as keyof LoginFormFields] || ""}
+                value={dataSubmitLogin[field.name] || ""}
                 onChange={handleInputChange}
               />
             </div>
@@ -120,12 +106,12 @@ const Login: React.FC = () => {
                 name="password"
                 id="passwordLogin"
                 placeholder="Enter your password"
-                value={dataSubmit.password || ""}
+                value={dataSubmitLogin.password || ""}
                 onChange={handleInputChange}
               />
               <span
                 className="icon-password"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => dispatch(actions.authFlow.togglePassword())}
               >
                 {showPassword ? <FaEye /> : <FaEyeSlash />}
               </span>

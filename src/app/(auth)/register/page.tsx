@@ -1,75 +1,31 @@
 "use client";
-
 import "./register.scss";
-import { useState } from "react";
+
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { hookValidate } from "@/components/utilities";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { apiHooks } from "@/redux/services";
+import { actions } from "@/redux/slices";
 import { useRouter } from "next/navigation";
-
-interface DataSubmit {
-  email: string;
-  password: string;
-  phone: string;
-  userName: string;
-}
-
-interface InputField {
-  label: string;
-  type: string;
-  name: keyof DataSubmit;
-  id: string;
-  placeholder: string;
-}
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const Register: React.FC = () => {
   // logic redux
+  const dispatch = useDispatch();
   const [userRegister] = apiHooks.Register();
   const router = useRouter();
 
   // State for managing password visibility
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [dataSubmit, setDataSubmit] = useState<DataSubmit>({
-    email: "",
-    password: "",
-    phone: "",
-    userName: "",
-  });
-
-  // List of input fields
-  const inputFields: InputField[] = [
-    {
-      label: "Username",
-      type: "text",
-      name: "userName",
-      id: "nameRegister",
-      placeholder: "Enter your username",
-    },
-    {
-      label: "Email",
-      type: "email",
-      name: "email",
-      id: "emailRegister",
-      placeholder: "Enter your email",
-    },
-    {
-      label: "Phone",
-      type: "number",
-      name: "phone",
-      id: "phoneRegister",
-      placeholder: "Enter your phone",
-    },
-  ];
+  const { inputRegisterField, dataSubmitRegister, showPassword } = useSelector(
+    (state: RootState) => state.authFlowData
+  );
 
   // Handlers
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setDataSubmit((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    dispatch(actions.authFlow.getDataInputRegister({ [name]: value }));
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
@@ -81,26 +37,22 @@ const Register: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const { email, password, phone, userName } = dataSubmitRegister;
 
     // Validate input fields
-    if (
-      !dataSubmit.email ||
-      !dataSubmit.password ||
-      !dataSubmit.phone ||
-      !dataSubmit.userName
-    ) {
+    if (!email || !password || !phone || !userName) {
       toast.error("Vui lòng nhập thông tin cần thiết");
       return;
     }
 
     // // Validate phone
-    if (!hookValidate.phoneNumber(dataSubmit.phone)) {
+    if (!hookValidate.phoneNumber(phone)) {
       toast.error("Số điện thoại phải từ 10 đến 11 ký tự");
       return;
     }
 
     // // Validate password
-    if (!hookValidate.password(dataSubmit.password)) {
+    if (!hookValidate.password(password)) {
       toast.error(
         "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt"
       );
@@ -109,10 +61,18 @@ const Register: React.FC = () => {
 
     // Call API for registration
     try {
-      const res = await userRegister(dataSubmit).unwrap();
+      const res = await userRegister(dataSubmitRegister).unwrap();
       if (res && res.errCode === 0) {
         toast.success(res.message);
-        setDataSubmit({ email: "", password: "", phone: "", userName: "" });
+        dispatch(
+          actions.authFlow.getDataInputRegister({
+            email: "",
+            password: "",
+            phone: "",
+            userName: "",
+          })
+        );
+
         router.replace("/login");
       } else {
         toast.error(res.message);
@@ -129,7 +89,7 @@ const Register: React.FC = () => {
         <p className="title">Register</p>
         <form className="form" onSubmit={handleSubmit}>
           {/* Group input fields */}
-          {inputFields.map((field, index) => (
+          {inputRegisterField.map((field, index) => (
             <div className="input-group" key={`input-register-${index}`}>
               <label htmlFor={field.id}>{field.label}</label>
               <input
@@ -137,7 +97,7 @@ const Register: React.FC = () => {
                 name={field.name}
                 id={field.id}
                 placeholder={field.placeholder}
-                value={dataSubmit[field.name] || ""}
+                value={dataSubmitRegister[field.name] || ""}
                 onChange={handleInputChange}
               />
             </div>
@@ -152,12 +112,12 @@ const Register: React.FC = () => {
                 name="password"
                 id="passwordRegister"
                 placeholder="Enter your password"
-                value={dataSubmit.password || ""}
+                value={dataSubmitRegister.password || ""}
                 onChange={handleInputChange}
               />
               <span
                 className="icon-password"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => dispatch(actions.authFlow.togglePassword())}
               >
                 {showPassword ? <FaEye /> : <FaEyeSlash />}
               </span>

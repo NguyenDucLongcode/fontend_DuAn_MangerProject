@@ -2,6 +2,7 @@
 
 import ModalCreate from "./(ModalCreate)/ModalCreate";
 import ModalDelete from "./(ModalDelete)/ModalDelete";
+import ModalUpdate from "./(ModalUpdate)/ModalUpdate";
 import TableUser from "./(TableUser)/TableUser";
 const ManagerUser = () => {
   return (
@@ -11,6 +12,7 @@ const ManagerUser = () => {
       </div>
       <ModalDelete />
       <ModalCreate />
+      <ModalUpdate />
     </div>
   );
 };

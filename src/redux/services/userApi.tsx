@@ -29,6 +29,19 @@ export const userApi = createApi({
         body: data,
       }),
     }),
+    getUserById: builder.query<getUserByIdRequest, number>({
+      query: (userId: number) => ({
+        url: `api/v1/getUseById?id=${userId}`,
+        method: "GET",
+      }),
+    }),
+    updateUser: builder.mutation({
+      query: (data: object) => ({
+        url: "http://localhost:8080/api/v1/update_user",
+        method: "PUT",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -37,4 +50,6 @@ export const {
   useDeleteUserMutation,
   useGetAllGroupQuery,
   useCreateUserMutation,
+  useGetUserByIdQuery,
+  useUpdateUserMutation,
 } = userApi;
