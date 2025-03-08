@@ -1,11 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-const initialState: PaginationType = {
-  pageSize: 5,
-  currentPage: 1,
-  filterText: "",
-  gotoPage: 1,
-};
+import { initialState } from "./state";
 
 const PaginationSlice = createSlice({
   name: "Pagination",

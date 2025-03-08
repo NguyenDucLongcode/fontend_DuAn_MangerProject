@@ -1,14 +1,18 @@
 export interface AccountStyle {
+  access_token: string;
+  data: { id: number; name: string; roles: RolesStyle[] };
+  email: string | null;
+}
+
+export interface RolesStyle {
   id: number;
-  name: string;
-  address: string | null;
-  phone: string | null;
-  sex: string | null;
-  isCustomer: string | null;
-  groupId: number;
+  url: string;
+  description: string;
   createdAt: string;
 }
 export interface AccountState {
-  account: Partial<AccountStyle>; // Cho phép các trường thiếu, nhưng vẫn là object
+  account: AccountStyle | null; // Cho phép các trường thiếu, nhưng vẫn là object
   isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
 }

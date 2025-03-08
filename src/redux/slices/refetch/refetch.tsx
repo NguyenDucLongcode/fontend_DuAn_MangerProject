@@ -1,9 +1,8 @@
-// store/refetchSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RefetchState } from "./type";
 
 const initialState: RefetchState = {
   refetchPagination: null,
-  refetchModalUpdateUser: null,
 };
 
 const refetchSlice = createSlice({
@@ -13,11 +12,8 @@ const refetchSlice = createSlice({
     pagination: (state, action: PayloadAction<() => void>) => {
       state.refetchPagination = action.payload;
     },
-    modalUpdateUser: (state, action: PayloadAction<() => void>) => {
-      state.refetchModalUpdateUser = action.payload;
-    },
   },
 });
 
-export const { pagination, modalUpdateUser } = refetchSlice.actions;
+export const { pagination } = refetchSlice.actions;
 export default refetchSlice.reducer;

@@ -1,7 +1,7 @@
 import { Col, Form, Row, InputGroup } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
-import { actions } from "@/redux/slices";
+import { actions } from "@/redux/slices/index";
 import { apiHooks } from "@/redux/services";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 

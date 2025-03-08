@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { apiHooks } from "@/redux/services";
-import { actions } from "@/redux/slices";
+import { actions } from "@/redux/slices/index";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 
@@ -52,15 +52,16 @@ const Login: React.FC = () => {
     // Call API login
     try {
       const res = await userLogin(dataSubmitLogin).unwrap();
-      if (res && res.data.errCode === 0) {
-        toast.success(res.data.message);
+
+      if (res && res.errCode === 0) {
+        toast.success(res.message);
         dispatch(
           actions.authFlow.getDataInputLogin({ email: "", password: "" })
         );
-        dispatch(actions.auth.login(res.data.dataUser));
         router.replace("/");
+        dispatch(actions.auth.login(res.data));
       } else {
-        toast.error(res.data.message);
+        toast.error(res.message);
       }
     } catch (error) {
       toast.error("Đã có lỗi xảy ra, vui lòng thử lại!");

@@ -1,5 +1,5 @@
 export interface MoDalUserState {
-  data: object;
+  data: Partial<IdentityUser>;
   type: string;
   userId: number;
   dataCreateUser: DataSubmitCreateUser;

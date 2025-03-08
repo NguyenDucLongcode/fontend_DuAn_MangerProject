@@ -1,5 +1,5 @@
-import { authApi } from "./authApi";
-import { userApi } from "./userApi";
+import { authApi } from "./authApi/authApi";
+import { userApi } from "./userApi/userApi";
 import apiHooks from "./hook";
 
 // total reduces

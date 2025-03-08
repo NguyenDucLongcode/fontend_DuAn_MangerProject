@@ -3,9 +3,10 @@ import { ReduxProvider } from "@/redux/provider";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, Bounce } from "react-toastify";
 import "./(main)/scss/Tool.scss"; // tool reset css
-import "@/styles/reactTable.scss"; //  global  react table
+import "@/styles/reactTable.scss"; // global react table
 import "./layout.scss"; // scss layout
 import "bootstrap/dist/css/bootstrap.min.css"; // bootstrap
+import { PrivateRoute, FetchUserAccount } from "@/components";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,7 +21,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="app-container">
-        <ReduxProvider>{children}</ReduxProvider>
+        <ReduxProvider>
+          {/* FetchUserAccount */}
+          <FetchUserAccount />
+          {/* Private Route */}
+          <PrivateRoute> {children}</PrivateRoute>
+        </ReduxProvider>
         <ToastContainer
           position="top-right"
           autoClose={5000}

@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
-import { actions } from "@/redux/slices";
+import { actions } from "@/redux/slices/index";
 import { apiHooks } from "@/redux/services";
 import { toast } from "react-toastify";
 import { hookValidate } from "@/components/utilities";
@@ -16,7 +16,7 @@ const ModalUpdate = () => {
   // queries
   const [updateUser] = apiHooks.UpdateUser();
 
-  const { refetchPagination, refetchModalUpdateUser } = useSelector(
+  const { refetchPagination } = useSelector(
     (state: RootState) => state.refetchData
   );
 
@@ -33,18 +33,15 @@ const ModalUpdate = () => {
       const res = await updateUser(dataUpdateUser).unwrap();
       if (res.errCode === 0) {
         toast.success(res.message);
-        if (refetchPagination && refetchModalUpdateUser) {
+        if (refetchPagination) {
           refetchPagination();
-          refetchModalUpdateUser();
-          alert(res.message);
         }
         handleClose();
       } else {
         toast.error(res.message);
       }
     } catch (error) {
-      toast.error("Failed to create user!");
-      console.error("Error:", error);
+      console.log(error);
     }
   };
 

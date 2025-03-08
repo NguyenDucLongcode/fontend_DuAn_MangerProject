@@ -2,7 +2,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
-import { actions } from "@/redux/slices";
+import { actions } from "@/redux/slices/index";
 import { apiHooks } from "@/redux/services";
 import { toast } from "react-toastify";
 
@@ -15,11 +15,11 @@ function ModalDelete() {
     (state: RootState) => state.modelUserData.type === "deleteUser"
   );
 
-  const dataUser: Partial<User> = useSelector(
-    (state: RootState) => state.modelUserData.data
-  );
+  const dataUser = useSelector((state: RootState) => state.modelUserData.data);
 
-  const userLoin = useSelector((state: RootState) => state.authData.account);
+  const userLoin = useSelector(
+    (state: RootState) => state.authReducerData.account
+  );
   const refetchPagination = useSelector(
     (state: RootState) => state.refetchData.refetchPagination
   );
@@ -30,12 +30,7 @@ function ModalDelete() {
   };
   const handleConfig = async () => {
     try {
-      if (!userLoginId) {
-        toast.error("Vui lòng đăng nhập để xóa tài khoản");
-        return handleClose();
-      }
       // check id user login with user wants delete
-
       if (userLoginId === dataUser.id) {
         toast.error("không thể xóa chính bạn được");
         return handleClose();
@@ -58,7 +53,7 @@ function ModalDelete() {
         }
       }
     } catch (error) {
-      console.error("Error during config:", error);
+      console.log(error);
     }
   };
 

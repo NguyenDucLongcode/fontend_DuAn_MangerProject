@@ -7,14 +7,14 @@ import Image from "next/image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
-import { actions } from "@/redux/slices";
+import { actions } from "@/redux/slices/index";
 import { useDispatch } from "react-redux";
 
 const Header = () => {
   // logic redux
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector((state: RootState) => {
-    return state.authData.isAuthenticated;
+  const { isAuthenticated } = useSelector((state: RootState) => {
+    return state.authReducerData;
   });
   // react state
   const [menuOpen, setMenuOpen] = useState<boolean>(false);

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { hookValidate } from "@/components/utilities";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { apiHooks } from "@/redux/services";
-import { actions } from "@/redux/slices";
+import { actions } from "@/redux/slices/index";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";

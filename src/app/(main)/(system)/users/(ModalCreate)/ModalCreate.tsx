@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
-import { actions } from "@/redux/slices";
+import { actions } from "@/redux/slices/index";
 import { apiHooks } from "@/redux/services";
 import { toast } from "react-toastify";
 import { hookValidate } from "@/components/utilities";
@@ -60,8 +60,7 @@ const ModalCreate = () => {
         toast.error(res.message);
       }
     } catch (error) {
-      toast.error("Failed to create user!");
-      console.error("Error:", error);
+      console.log("Error:", error);
     }
   };
 
