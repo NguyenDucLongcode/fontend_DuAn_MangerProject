@@ -1,7 +1,7 @@
 export interface AccountStyle {
   access_token: string;
   data: { id: number; name: string; roles: RolesStyle[] };
-  email: string | null;
+  email: string;
 }
 
 export interface RolesStyle {

@@ -1,3 +1,7 @@
-import * as userServices from "./userServices";
+import * as userServices from "./users/userServices";
+import * as authServices from "./auth/auth";
 
-export { userServices };
+export const apiAxios = {
+  user: userServices,
+  auth: authServices,
+};

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { AccountState, AccountStyle } from "./type";
-import { fetchUserAccountCookies } from "@/axios/userServices";
+import { fetchUserAccountCookies } from "@/axios/auth/auth";
 import { AxiosResponse, AxiosError } from "axios";
 
 const initialState: AccountState = {

@@ -8,7 +8,7 @@ import {
   showCreateModal,
 } from "./reducers";
 import { DataSubmitUpdateUser, UserByIdApiResponse } from "./types";
-import { userServices } from "@/axios";
+import { apiAxios } from "@/axios";
 
 const mapUserData = (
   userId: number,
@@ -28,8 +28,8 @@ export const fetchUserById = createAsyncThunk(
   "modal/fetchUserById",
   async (userId: number, { dispatch }) => {
     try {
-      const dataUserByIdApi = await userServices.fetchUserById(userId);
-      console.log("check data", dataUserByIdApi);
+      const dataUserByIdApi = await apiAxios.user.fetchUserById(userId);
+
       if (dataUserByIdApi) {
         dispatch(
           updateUser(
