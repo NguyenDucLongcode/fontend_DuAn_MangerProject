@@ -5,7 +5,7 @@ import {
   FetchArgs,
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
-import { GetUserByIdRequest, GroupResponse } from "./type";
+import { GetUserByIdRequest, GroupResponse, PaginationResponse } from "./type";
 import { toast } from "react-toastify";
 
 const baseQuery = fetchBaseQuery({
@@ -50,7 +50,10 @@ export const userApi = createApi({
   reducerPath: "user",
   baseQuery: customBaseQuery,
   endpoints: (builder) => ({
-    getPagination: builder.query({
+    getPagination: builder.query<
+      PaginationResponse,
+      { page: number; limit: number }
+    >({
       query: ({ page, limit }) => ({
         url: `api/v1/user/read?page=${page}&limit=${limit}`,
         method: "GET",

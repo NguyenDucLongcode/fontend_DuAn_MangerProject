@@ -12,15 +12,12 @@ const PaginationSlice = createSlice({
     setCurrentPage: (state, action) => {
       state.currentPage = action.payload;
     },
-    setFilterText: (state, action) => {
-      state.filterText = action.payload;
-    },
-    setGoToPage: (state, action) => {
-      state.gotoPage = action.payload;
+    setFilterUser: (state, action) => {
+      state.filterUser = { ...state.filterUser, ...action.payload };
     },
   },
 });
 
-export const { setPageSize, setCurrentPage, setFilterText, setGoToPage } =
+export const { setPageSize, setCurrentPage, setFilterUser } =
   PaginationSlice.actions;
 export default PaginationSlice.reducer;

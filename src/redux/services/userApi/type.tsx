@@ -30,3 +30,26 @@ export interface Group {
   description: string;
   createdAt: string;
 }
+// Pagination
+export interface PaginationResponse {
+  currentPage: number;
+  data: PaginationData[];
+  errCode: number;
+  message: string;
+  totalPages: number;
+  totalRecords: number;
+}
+export interface PaginationData {
+  address: string | null;
+  createdAt: string | null;
+  dataGroup: {
+    name: string;
+  };
+  email: string;
+  groupId: number;
+  id: number;
+  isCustomer: string;
+  name: string | null;
+  phone: string | null;
+  sex: string | null;
+}

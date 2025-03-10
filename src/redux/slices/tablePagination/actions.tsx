@@ -1,8 +1,3 @@
-import {
-  setPageSize,
-  setCurrentPage,
-  setFilterText,
-  setGoToPage,
-} from "./reducers";
+import { setPageSize, setCurrentPage, setFilterUser } from "./reducers";
 
-export { setPageSize, setCurrentPage, setFilterText, setGoToPage };
+export { setPageSize, setCurrentPage, setFilterUser };

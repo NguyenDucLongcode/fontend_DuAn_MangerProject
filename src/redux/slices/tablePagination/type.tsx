@@ -1,6 +1,11 @@
 export interface PaginationType {
   pageSize: number;
   currentPage: number;
-  filterText: string;
-  gotoPage: number;
+  filterUser: ListFilter;
+}
+
+interface ListFilter {
+  name: string;
+  email: string;
+  group: string;
 }

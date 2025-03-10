@@ -16,10 +16,10 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   );
 
   useEffect(() => {
-    if (!isAuthenticated && PROTECTED_ROUTES.includes(pathname)) {
+    if (!isLoading && !isAuthenticated && PROTECTED_ROUTES.includes(pathname)) {
       router.push("/login"); // Redirect nếu chưa đăng nhập
     }
-  }, [isAuthenticated, pathname, router]);
+  }, [isAuthenticated, pathname, router, isLoading]);
 
   if (isLoading) return null;
 
