@@ -1,8 +1,6 @@
 "use client";
 
-import ModalCreate from "./(modal)/(ModalCreate)/ModalCreate";
-import ModalDelete from "./(modal)/(ModalDelete)/ModalDelete";
-import ModalUpdate from "./(modal)/(ModalUpdate)/ModalUpdate";
+import { ModalCreate, ModalDelete, ModalUpdate } from "./(modal)";
 import TableUser from "./(TableUser)/TableUser";
 const ManagerUser = () => {
   return (

@@ -6,7 +6,7 @@ import "./(main)/scss/Tool.scss"; // tool reset css
 import "@/styles/reactTable.scss"; // global react table
 import "./layout.scss"; // scss layout
 import "bootstrap/dist/css/bootstrap.min.css"; // bootstrap
-import { PrivateRoute, FetchUserAccount } from "@/components";
+import { PrivateRoute, FetchUserAccount } from "@/components/lib";
 
 export const metadata: Metadata = {
   title: "Create Next App",

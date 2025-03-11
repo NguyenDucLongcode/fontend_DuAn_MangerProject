@@ -1,7 +1,5 @@
-import { PaginationData } from "@/redux/services/userApi/type";
-
 export interface MoDalUserState {
-  data: Partial<PaginationData>;
+  data: Partial<PaginationUserData>;
   type: string;
   userId: number;
   dataCreateUser: DataSubmitCreateUser;

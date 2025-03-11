@@ -17,21 +17,18 @@ function ModalDelete() {
 
   const dataUser = useSelector((state: RootState) => state.modelUserData.data);
 
-  const userLoin = useSelector(
-    (state: RootState) => state.authReducerData.account
-  );
+  const { account } = useSelector((state: RootState) => state.authReducerData);
   const refetchPagination = useSelector(
     (state: RootState) => state.refetchData.refetchPagination
   );
-  const userLoginId = userLoin.id;
 
   const handleClose = (): void => {
     dispatch(actions.modalUser.hide());
   };
   const handleConfig = async () => {
     try {
-      // check id user login with user wants delete
-      if (userLoginId === dataUser.id) {
+      // not allowed delete own
+      if (account?.email === dataUser.email) {
         toast.error("không thể xóa chính bạn được");
         return handleClose();
       }

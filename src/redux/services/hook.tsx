@@ -2,11 +2,11 @@ import { useLoginMutation, useRegisterMutation } from "./authApi/authApi";
 import {
   useGetPaginationQuery,
   useDeleteUserMutation,
-  useGetAllGroupQuery,
   useCreateUserMutation,
   useGetUserByIdQuery,
   useUpdateUserMutation,
 } from "./userApi/userApi";
+import { useGetAllGroupQuery } from "./groupApi/groupApi";
 
 const apiHooks = {
   //auth
@@ -16,10 +16,11 @@ const apiHooks = {
   // userApi
   GetPagination: useGetPaginationQuery,
   DeleteUser: useDeleteUserMutation,
-  GetAllGroup: useGetAllGroupQuery,
   CreateUser: useCreateUserMutation,
   GetUserById: useGetUserByIdQuery,
   UpdateUser: useUpdateUserMutation,
+  // groupApi
+  GetAllGroup: useGetAllGroupQuery,
 };
 
 export default apiHooks;

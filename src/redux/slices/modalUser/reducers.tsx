@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { initialState } from "./state";
 import { DataSubmitCreateUser, DataSubmitUpdateUser } from "./types";
-import { PaginationData } from "@/redux/services/userApi/type";
 
 const modalUserSlice = createSlice({
   name: "modal",
@@ -9,7 +8,7 @@ const modalUserSlice = createSlice({
   reducers: {
     show: (
       state,
-      action: PayloadAction<{ data: PaginationData; type: string }>
+      action: PayloadAction<{ data: PaginationUserData; type: string }>
     ) => {
       state.data = action.payload.data;
       state.type = action.payload.type;

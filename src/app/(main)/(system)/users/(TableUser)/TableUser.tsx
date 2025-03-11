@@ -7,7 +7,6 @@ import { RootState, AppDispatch } from "@/redux/store";
 import Table from "react-bootstrap/Table";
 import "./TableUser.scss";
 import ReactPaginate from "react-paginate";
-import { PaginationData } from "@/redux/services/userApi/type";
 
 const TableUser = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -41,7 +40,7 @@ const TableUser = () => {
   };
 
   const handleAction = useCallback(
-    (action: string, user: PaginationData) => {
+    (action: string, user: PaginationUserData) => {
       if (action === "deleteUser") {
         dispatch(actions.modalUser.show({ data: user, type: "deleteUser" }));
       }
@@ -52,7 +51,7 @@ const TableUser = () => {
     [dispatch]
   );
 
-  const handleCreate = useCallback(() => {
+  const handleCreateModal = useCallback(() => {
     dispatch(actions.modalUser.showCreateModal());
   }, [dispatch]);
 
@@ -66,7 +65,7 @@ const TableUser = () => {
   // render
   return (
     <div className="table-container mt-4">
-      <button className="btn btn-primary mb-3" onClick={handleCreate}>
+      <button className="btn btn-primary mb-3" onClick={handleCreateModal}>
         Create New User
       </button>
       <Table responsive className="custom-table">

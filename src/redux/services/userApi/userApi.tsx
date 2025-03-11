@@ -1,50 +1,6 @@
-import {
-  createApi,
-  fetchBaseQuery,
-  BaseQueryFn,
-  FetchArgs,
-  FetchBaseQueryError,
-} from "@reduxjs/toolkit/query/react";
-import { GetUserByIdRequest, GroupResponse, PaginationResponse } from "./type";
-import { toast } from "react-toastify";
-
-const baseQuery = fetchBaseQuery({
-  baseUrl: process.env.NEXT_PUBLIC_API_URL,
-  credentials: "include",
-  prepareHeaders: (headers) => {
-    headers.set("Content-Type", "application/json");
-    return headers;
-  },
-});
-
-const customBaseQuery: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args, api, extraOptions) => {
-  const result = await baseQuery(args, api, extraOptions);
-  if (result.error) {
-    switch (result.error.status) {
-      case 400:
-        console.error("Bad Request: Dữ liệu không hợp lệ!");
-        break;
-      case 401:
-        toast.error("Unauthorized: Chưa đăng nhập!");
-        // window.location.replace("/login");
-        break;
-      case 403:
-        toast.error("Forbidden: Không có quyền!");
-        break;
-      case 500:
-        console.error("Server Error: Lỗi hệ thống!");
-        break;
-      default:
-        toast.error("Lỗi không xác định!");
-    }
-  }
-
-  return result;
-};
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { GetUserByIdRequest, PaginationResponse } from "./type";
+import { customBaseQuery } from "../customApi";
 
 export const userApi = createApi({
   reducerPath: "user",
@@ -63,12 +19,6 @@ export const userApi = createApi({
       query: (id: number) => ({
         url: `api/v1/user/delete?id=${id}`,
         method: "DELETE",
-      }),
-    }),
-    getAllGroup: builder.query<GroupResponse, void>({
-      query: () => ({
-        url: `api/v1/group/read`,
-        method: "GET",
       }),
     }),
     createUser: builder.mutation({
@@ -97,7 +47,6 @@ export const userApi = createApi({
 export const {
   useGetPaginationQuery,
   useDeleteUserMutation,
-  useGetAllGroupQuery,
   useCreateUserMutation,
   useGetUserByIdQuery,
   useUpdateUserMutation,
