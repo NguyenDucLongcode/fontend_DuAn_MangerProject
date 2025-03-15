@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 
 function ModalDelete() {
   const dispatch = useDispatch();
-  const [deleteUser] = apiHooks.DeleteUser();
+  const [deleteUser] = apiHooks.user.DeleteUser();
 
   // Get data from Redux state
   const showModal = useSelector(
@@ -18,8 +18,8 @@ function ModalDelete() {
   const dataUser = useSelector((state: RootState) => state.modelUserData.data);
 
   const { account } = useSelector((state: RootState) => state.authReducerData);
-  const refetchPagination = useSelector(
-    (state: RootState) => state.refetchData.refetchPagination
+  const { refetchPaginationUser } = useSelector(
+    (state: RootState) => state.refetchData
   );
 
   const handleClose = (): void => {
@@ -36,17 +36,17 @@ function ModalDelete() {
       // call api
       if (dataUser.id !== undefined) {
         const res = await deleteUser(dataUser?.id).unwrap();
-        if (res && res.data.errCode === 0) {
-          toast.success(res.data.message);
-          if (refetchPagination) {
-            refetchPagination();
+        if (res && res.errCode === 0) {
+          toast.success(res.message);
+          if (refetchPaginationUser) {
+            refetchPaginationUser();
           } else {
             console.warn("refetchPagination is undefined.");
           }
 
           handleClose();
         } else {
-          toast.error(res.data.message);
+          toast.error(res.message);
         }
       }
     } catch (error) {

@@ -13,7 +13,7 @@ const Login: React.FC = () => {
   // logic redux
   const dispatch = useDispatch();
   const router = useRouter();
-  const [userLogin] = apiHooks.Login();
+  const [userLogin] = apiHooks.auth.Login();
 
   const { inputLoginField, dataSubmitLogin, showPassword } = useSelector(
     (state: RootState) => state.authFlowData

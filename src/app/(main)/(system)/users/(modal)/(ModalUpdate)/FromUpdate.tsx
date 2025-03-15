@@ -4,11 +4,11 @@ import { RootState, AppDispatch } from "@/redux/store";
 import { actions } from "@/redux/slices/index";
 import { apiHooks } from "@/redux/services";
 import { useEffect } from "react";
-import { DataSubmitUpdateUser } from "@/redux/slices/modalUser/types";
+import { DataSubmitUpdateUser } from "@/redux/slices/system/user/modalUser/types";
 
 const FromUpdateUser = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { data: dataGroups } = apiHooks.GetAllGroup();
+  const { data: dataGroups } = apiHooks.group.GetAllGroup();
   const { userId, formFieldsUpdate, dataUpdateUser } = useSelector(
     (state: RootState) => state.modelUserData
   );

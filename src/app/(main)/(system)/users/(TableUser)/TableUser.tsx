@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { actions } from "@/redux/slices/index";
 import { RootState, AppDispatch } from "@/redux/store";
 import Table from "react-bootstrap/Table";
-import "./TableUser.scss";
 import ReactPaginate from "react-paginate";
 
 const TableUser = () => {
@@ -14,31 +13,38 @@ const TableUser = () => {
   const { currentPage, pageSize, filterUser } = useSelector(
     (state: RootState) => state.paginationData
   );
-  console.log(filterUser);
 
   const fieldFilter = [
     { type: "text", name: "email", placeholder: "Filter Email..." },
     { type: "text", name: "name", placeholder: "Filter UserName..." },
-    { type: "text", name: "group", placeholder: "Filter Group..." },
   ];
 
   // queries
-  const { data: paginationData, refetch: refetchPagination } =
-    apiHooks.GetPagination({
+  const { data: dataGroups } = apiHooks.group.GetAllGroup();
+
+  const { data: paginationData, refetch: refetchPaginationUser } =
+    apiHooks.user.GetPagination({
       page: currentPage,
       limit: pageSize,
+      name: filterUser.name,
+      email: filterUser.email,
+      groupId: filterUser.groupId,
     });
 
   // handle pagination
   const handlePageClick = (event: { selected: number }) => {
     dispatch(actions.Pagination.setCurrentPage(event.selected + 1));
   };
+
   // handle filter
-  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFilterChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = event.target;
     dispatch(actions.Pagination.setFilterUser({ [name]: value }));
   };
 
+  // handle action
   const handleAction = useCallback(
     (action: string, user: PaginationUserData) => {
       if (action === "deleteUser") {
@@ -57,10 +63,10 @@ const TableUser = () => {
 
   //useEffects
   useEffect(() => {
-    if (refetchPagination) {
-      dispatch(actions.refetch.pagination(refetchPagination)); // lưu hàm refresh pagination vào redux
+    if (refetchPaginationUser) {
+      dispatch(actions.refetch.paginationUser(refetchPaginationUser)); // lưu hàm refresh pagination vào redux
     }
-  }, [dispatch, refetchPagination]);
+  }, [dispatch, refetchPaginationUser]);
 
   // render
   return (
@@ -72,6 +78,8 @@ const TableUser = () => {
         <thead>
           <tr>
             <th>No</th>
+
+            {/* field filter */}
             {fieldFilter.map((field, index) => {
               return (
                 <th key={`${index}+field`}>
@@ -84,41 +92,71 @@ const TableUser = () => {
                 </th>
               );
             })}
+            <th>
+              {/* select group */}
+              <select
+                className="select-group"
+                value={filterUser.groupId}
+                name="groupId"
+                onChange={handleFilterChange}
+              >
+                <option value=""> All</option>
+                {dataGroups?.data.map((group, index) => {
+                  return (
+                    <option key={`${index}+select`} value={group.id}>
+                      {group.name}
+                    </option>
+                  );
+                })}
+              </select>
+            </th>
 
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {paginationData?.data?.map((user, index: number) => {
-            return (
-              <tr key={index}>
-                <td>{index + 1 + (currentPage - 1) * pageSize}</td>
-                <td>{user.email}</td>
-                <td>{user.name}</td>
-                <td>{user.dataGroup.name}</td>
-                <td>
-                  <button
-                    className="btn btn-info"
-                    onClick={() => handleAction("viewUser", user)}
-                  >
-                    View
-                  </button>
-                  <button
-                    className="btn btn-warning mx-3"
-                    onClick={() => handleAction("editUser", user)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => handleAction("deleteUser", user)}
-                  >
-                    Delete
-                  </button>
+          {paginationData?.data.length === 0 ? (
+            <>
+              <tr>
+                <td colSpan={fieldFilter.length + 3} style={{ color: "black" }}>
+                  No data found.
                 </td>
               </tr>
-            );
-          })}
+            </>
+          ) : (
+            <>
+              {paginationData?.data?.map((user, index: number) => {
+                return (
+                  <tr key={index}>
+                    <td>{index + 1 + (currentPage - 1) * pageSize}</td>
+                    <td>{user.email}</td>
+                    <td>{user.name}</td>
+                    <td>{user.dataGroup.name}</td>
+                    <td>
+                      <button
+                        className="btn btn-info"
+                        onClick={() => handleAction("viewUser", user)}
+                      >
+                        View
+                      </button>
+                      <button
+                        className="btn btn-warning mx-3"
+                        onClick={() => handleAction("editUser", user)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => handleAction("deleteUser", user)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </>
+          )}
         </tbody>
       </Table>
       {/* React Pagination */}

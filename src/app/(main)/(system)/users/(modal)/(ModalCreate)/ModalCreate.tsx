@@ -10,12 +10,12 @@ import FromCreateUser from "./FormCreateUser";
 const ModalCreate = () => {
   // logic redux
   const dispatch = useDispatch();
-  const [createUser] = apiHooks.CreateUser();
+  const [createUser] = apiHooks.user.CreateUser();
   const { type, dataCreateUser } = useSelector(
     (state: RootState) => state.modelUserData
   );
-  const refetchPagination = useSelector(
-    (state: RootState) => state.refetchData.refetchPagination
+  const { refetchPaginationUser } = useSelector(
+    (state: RootState) => state.refetchData
   );
 
   // handler
@@ -52,8 +52,8 @@ const ModalCreate = () => {
       const res = await createUser(dataCreateUser).unwrap();
       if (res.errCode === 0) {
         toast.success(res.message);
-        if (refetchPagination) {
-          refetchPagination();
+        if (refetchPaginationUser) {
+          refetchPaginationUser();
         }
         handleClose();
       } else {

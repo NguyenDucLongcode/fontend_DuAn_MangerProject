@@ -1,4 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { apiAxios } from "@/axios";
 import {
   updateUser,
   show,
@@ -8,7 +9,6 @@ import {
   showCreateModal,
 } from "./reducers";
 import { DataSubmitUpdateUser, UserByIdApiResponse } from "./types";
-import { apiAxios } from "@/axios";
 
 const mapUserData = (
   userId: number,

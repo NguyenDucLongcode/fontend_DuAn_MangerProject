@@ -13,6 +13,12 @@ declare global {
     phone: string | null;
     sex: string | null;
   }
+  interface PaginationRoleData {
+    id: number;
+    url: string;
+    description: string;
+    createdAt: string;
+  }
 }
 
 export {};

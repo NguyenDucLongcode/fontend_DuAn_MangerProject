@@ -3,24 +3,34 @@ import {
   useGetPaginationQuery,
   useDeleteUserMutation,
   useCreateUserMutation,
-  useGetUserByIdQuery,
   useUpdateUserMutation,
 } from "./userApi/userApi";
 import { useGetAllGroupQuery } from "./groupApi/groupApi";
+import {
+  useGetPaginationRoleQuery,
+  useDeleteRoleMutation,
+  useUpdateRoleMutation,
+} from "./rolesApi/rolesApi";
 
 const apiHooks = {
   //auth
-  Login: useLoginMutation,
-  Register: useRegisterMutation,
+  auth: { Login: useLoginMutation, Register: useRegisterMutation },
 
   // userApi
-  GetPagination: useGetPaginationQuery,
-  DeleteUser: useDeleteUserMutation,
-  CreateUser: useCreateUserMutation,
-  GetUserById: useGetUserByIdQuery,
-  UpdateUser: useUpdateUserMutation,
+  user: {
+    GetPagination: useGetPaginationQuery,
+    DeleteUser: useDeleteUserMutation,
+    CreateUser: useCreateUserMutation,
+    UpdateUser: useUpdateUserMutation,
+  },
   // groupApi
-  GetAllGroup: useGetAllGroupQuery,
+  group: { GetAllGroup: useGetAllGroupQuery },
+  // rolesApi
+  roles: {
+    GetPaginationRole: useGetPaginationRoleQuery,
+    DeleteRole: useDeleteRoleMutation,
+    UpdateRole: useUpdateRoleMutation,
+  },
 };
 
 export default apiHooks;

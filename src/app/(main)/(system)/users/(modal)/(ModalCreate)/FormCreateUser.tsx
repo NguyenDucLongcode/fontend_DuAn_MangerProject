@@ -7,7 +7,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const FromCreateUser = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { data: dataGroups } = apiHooks.GetAllGroup();
+  const { data: dataGroups } = apiHooks.group.GetAllGroup();
   const { showPassword, formFieldsCreate } = useSelector(
     (state: RootState) => state.modelUserData
   );

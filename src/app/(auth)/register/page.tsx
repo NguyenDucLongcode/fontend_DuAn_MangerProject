@@ -14,7 +14,7 @@ import { RootState } from "@/redux/store";
 const Register: React.FC = () => {
   // logic redux
   const dispatch = useDispatch();
-  const [userRegister] = apiHooks.Register();
+  const [userRegister] = apiHooks.auth.Register();
   const router = useRouter();
 
   // State for managing password visibility

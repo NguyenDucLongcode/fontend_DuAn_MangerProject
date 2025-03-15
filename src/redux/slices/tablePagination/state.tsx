@@ -6,6 +6,10 @@ export const initialState: PaginationType = {
   filterUser: {
     email: "",
     name: "",
-    group: "",
+    groupId: "",
+  },
+  filterRole: {
+    url: "",
+    description: "",
   },
 };

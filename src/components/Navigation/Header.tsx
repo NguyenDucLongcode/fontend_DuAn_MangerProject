@@ -19,8 +19,8 @@ const Header = () => {
   // react state
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
 
-  const menuItems: string[] = ["Home", "Users", "Services", "Contact"];
-  const menuUrls: string[] = ["/", "/users", "/services", "/contact"];
+  const menuItems: string[] = ["Home", "Users", "Roles", "Contact"];
+  const menuUrls: string[] = ["/", "/users", "/roles", "/contact"];
   const pathname = usePathname();
   const router = useRouter();
 

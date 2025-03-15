@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { GetUserByIdRequest, PaginationResponse } from "./type";
+import { PaginationResponse } from "./type";
 import { customBaseQuery } from "../customApi";
 
 export const userApi = createApi({
@@ -8,10 +8,16 @@ export const userApi = createApi({
   endpoints: (builder) => ({
     getPagination: builder.query<
       PaginationResponse,
-      { page: number; limit: number }
+      {
+        page: number;
+        limit: number;
+        name: string;
+        email: string;
+        groupId: number | string;
+      }
     >({
-      query: ({ page, limit }) => ({
-        url: `api/v1/user/read?page=${page}&limit=${limit}`,
+      query: ({ page, limit, name, email, groupId }) => ({
+        url: `api/v1/user/read?page=${page}&limit=${limit}&name=${name}&email=${email}&groupId=${groupId}`,
         method: "GET",
       }),
     }),
@@ -28,12 +34,6 @@ export const userApi = createApi({
         body: data,
       }),
     }),
-    getUserById: builder.query<GetUserByIdRequest, number>({
-      query: (userId: number) => ({
-        url: `api/v1/getUseById?id=${userId}`,
-        method: "GET",
-      }),
-    }),
     updateUser: builder.mutation({
       query: (data: object) => ({
         url: "api/v1/user/update",
@@ -48,6 +48,5 @@ export const {
   useGetPaginationQuery,
   useDeleteUserMutation,
   useCreateUserMutation,
-  useGetUserByIdQuery,
   useUpdateUserMutation,
 } = userApi;

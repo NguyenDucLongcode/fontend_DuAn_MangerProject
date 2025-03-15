@@ -1,3 +1,4 @@
 export interface RefetchState {
-  refetchPagination: (() => void) | null;
+  refetchPaginationUser: (() => void) | null;
+  refetchPaginationRole: (() => void) | null;
 }

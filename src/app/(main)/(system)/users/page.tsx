@@ -14,5 +14,4 @@ const ManagerUser = () => {
     </div>
   );
 };
-
 export default ManagerUser;

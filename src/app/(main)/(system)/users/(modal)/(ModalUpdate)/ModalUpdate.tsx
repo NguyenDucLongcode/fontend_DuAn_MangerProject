@@ -14,9 +14,9 @@ const ModalUpdate = () => {
     (state: RootState) => state.modelUserData
   );
   // queries
-  const [updateUser] = apiHooks.UpdateUser();
+  const [updateUser] = apiHooks.user.UpdateUser();
 
-  const { refetchPagination } = useSelector(
+  const { refetchPaginationUser } = useSelector(
     (state: RootState) => state.refetchData
   );
 
@@ -33,8 +33,8 @@ const ModalUpdate = () => {
       const res = await updateUser(dataUpdateUser).unwrap();
       if (res.errCode === 0) {
         toast.success(res.message);
-        if (refetchPagination) {
-          refetchPagination();
+        if (refetchPaginationUser) {
+          refetchPaginationUser();
         }
         handleClose();
       } else {
