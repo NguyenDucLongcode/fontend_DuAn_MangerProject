@@ -16,20 +16,27 @@ export const rolesApi = createApi({
       }
     >({
       query: ({ page, limit, url, description }) => ({
-        url: `api/v1/roles/read?page=${page}&limit=${limit}&url=${url}&description=${description}`,
+        url: `api/v1/role/read?page=${page}&limit=${limit}&url=${url}&description=${description}`,
         method: "GET",
       }),
     }),
     deleteRole: builder.mutation({
       query: (id: number) => ({
-        url: `api/v1/roles/delete?id=${id}`,
+        url: `api/v1/role/delete?id=${id}`,
         method: "DELETE",
       }),
     }),
     updateRole: builder.mutation({
       query: (data: object) => ({
-        url: "api/v1/roles/update",
+        url: "api/v1/role/update",
         method: "PUT",
+        body: data,
+      }),
+    }),
+    createRole: builder.mutation({
+      query: (data: object) => ({
+        url: "api/v1/role/create",
+        method: "POST",
         body: data,
       }),
     }),
@@ -40,4 +47,5 @@ export const {
   useGetPaginationRoleQuery,
   useDeleteRoleMutation,
   useUpdateRoleMutation,
+  useCreateRoleMutation,
 } = rolesApi;

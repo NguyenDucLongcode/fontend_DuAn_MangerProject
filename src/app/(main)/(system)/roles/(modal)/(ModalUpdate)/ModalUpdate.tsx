@@ -5,9 +5,7 @@ import { actions } from "@/redux/slices/index";
 import { apiHooks } from "@/redux/services";
 import { toast } from "react-toastify";
 import { Modal, Button } from "react-bootstrap";
-import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
+import { Col, Form, Row } from "react-bootstrap";
 
 const ModalUpdate = () => {
   // logic redux
@@ -29,8 +27,6 @@ const ModalUpdate = () => {
     const { name, value } = event.target;
     dispatch(actions.modalRole.updateRole({ [name]: value }));
   };
-
-  console.log("check data", dataUpdateRole);
 
   const handleConfig = async () => {
     try {

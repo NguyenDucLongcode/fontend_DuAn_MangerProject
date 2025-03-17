@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { initialState } from "./state";
-import { DataUpdate } from "./types";
+import { DataUpdate, DataCreate } from "./types";
 
 const modalRoleSlice = createSlice({
   name: "modal",
@@ -18,12 +18,17 @@ const modalRoleSlice = createSlice({
       state.data = {};
       state.type = "";
     },
-    showCreateModal: (state) => {
-      state.type = "createRole";
-    },
+
     updateRole: (state, action: PayloadAction<Partial<DataUpdate>>) => {
       state.dataUpdateRole = {
         ...state.dataUpdateRole,
+        ...action.payload,
+      };
+    },
+
+    createRole: (state, action: PayloadAction<Partial<DataCreate>>) => {
+      state.dataCreateRole = {
+        ...state.dataCreateRole,
         ...action.payload,
       };
     },
@@ -32,5 +37,4 @@ const modalRoleSlice = createSlice({
 
 export default modalRoleSlice.reducer;
 
-export const { show, hide, showCreateModal, updateRole } =
-  modalRoleSlice.actions;
+export const { show, hide, updateRole, createRole } = modalRoleSlice.actions;

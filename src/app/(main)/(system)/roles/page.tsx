@@ -1,7 +1,7 @@
 "use client";
 
 import TableRole from "./(TableRole)/TableRoles";
-import { ModalDelete, ModalCreate, ModalUpdate } from "./(modal)";
+import { ModalDelete, ModalUpdate } from "./(modal)";
 
 const ManagerRole = () => {
   return (
@@ -10,7 +10,6 @@ const ManagerRole = () => {
         <TableRole />
       </div>
       <ModalDelete />
-      <ModalCreate />
       <ModalUpdate />
     </div>
   );

@@ -1,14 +1,16 @@
 "use client";
-import Table from "react-bootstrap/Table";
+import { Table } from "react-bootstrap";
 import { useEffect, useCallback } from "react";
 import { apiHooks } from "@/redux/services";
 import { actions } from "@/redux/slices/index";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
 import ReactPaginate from "react-paginate";
+import CreateRole from "../CreateRole/CreateRole";
 
 const TableRoles = () => {
   const dispatch = useDispatch<AppDispatch>();
+
   //state
   const { currentPage, pageSize, filterRole } = useSelector(
     (state: RootState) => state.paginationData
@@ -52,9 +54,6 @@ const TableRoles = () => {
     },
     [dispatch]
   );
-  const handleCreateModal = useCallback(() => {
-    dispatch(actions.modalRole.showCreateModal());
-  }, [dispatch]);
 
   //useEffects
   useEffect(() => {
@@ -65,9 +64,10 @@ const TableRoles = () => {
 
   return (
     <div className="table-container mt-4 container">
-      <button className="btn btn-primary mb-3" onClick={handleCreateModal}>
-        Create New Roles
-      </button>
+      {/* create Role */}
+      <CreateRole />
+
+      {/* Table */}
       <Table responsive className="custom-table">
         <thead>
           <tr>

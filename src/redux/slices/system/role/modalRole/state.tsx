@@ -8,4 +8,8 @@ export const initialState: MoDalRoleState = {
     url: "",
     description: "",
   },
+  dataCreateRole: {
+    url: "",
+    description: "",
+  },
 };

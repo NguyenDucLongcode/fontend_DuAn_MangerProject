@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { apiAxios } from "@/axios";
-import { show, hide, showCreateModal, updateRole } from "./reducers";
+import { show, hide, updateRole, createRole } from "./reducers";
 import { DataUpdate } from "./types";
 
 const mapUserData = (userId: number, data: DataUpdate) => ({
@@ -25,4 +25,4 @@ export const fetchRoleById = createAsyncThunk(
   }
 );
 // actions
-export { show, hide, showCreateModal, updateRole };
+export { show, hide, updateRole, createRole };
