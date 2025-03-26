@@ -59,6 +59,7 @@ const Login: React.FC = () => {
           actions.authFlow.getDataInputLogin({ email: "", password: "" })
         );
         router.replace("/");
+
         dispatch(actions.auth.login(res.data));
       } else {
         toast.error(res.message);

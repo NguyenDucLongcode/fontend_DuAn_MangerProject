@@ -2,7 +2,7 @@ declare global {
   interface PaginationUserData {
     address: string | null;
     createdAt: string | null;
-    dataGroup: {
+    group: {
       name: string;
     };
     email: string;
@@ -17,6 +17,16 @@ declare global {
     id: number;
     url: string;
     description: string;
+    createdAt: string;
+  }
+
+  interface PaginationProjectData {
+    id: number;
+    name: string;
+    startDate: string;
+    description: string;
+    projectManagerId: number;
+    customerId: number;
     createdAt: string;
   }
 }

@@ -3,6 +3,13 @@ import {
   setCurrentPage,
   setFilterUser,
   setFilterRole,
+  setFilterProject,
 } from "./reducers";
 
-export { setPageSize, setCurrentPage, setFilterUser, setFilterRole };
+export {
+  setPageSize,
+  setCurrentPage,
+  setFilterUser,
+  setFilterRole,
+  setFilterProject,
+};

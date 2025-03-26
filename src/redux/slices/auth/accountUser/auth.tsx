@@ -19,6 +19,7 @@ export const fetchUser = createAsyncThunk<
   try {
     const response: AxiosResponse<AccountStyle> | undefined =
       await fetchUserAccountCookies();
+    console.log("check response", response);
     if (!response) throw new Error("Không có dữ liệu từ server");
     return response.data;
   } catch (error: unknown) {

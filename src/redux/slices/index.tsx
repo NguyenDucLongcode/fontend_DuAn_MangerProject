@@ -4,6 +4,11 @@ import { modalRoleReducer, modalRoleActions } from "./system/role/modalRole";
 import { refetchReducer, refetchActions } from "./refetch";
 import { paginationReducer, paginationActions } from "./tablePagination";
 import { authFlowReducer, authFlowActions } from "./auth/authFlowReducer";
+import {
+  assignGroupReducer,
+  assignGroupActions,
+} from "./system/role/Assign-Group";
+import { modalProjectReducer, modalProjectActions } from "./system/project";
 
 //  reducers group
 export const reducers = {
@@ -13,6 +18,8 @@ export const reducers = {
   refetchData: refetchReducer,
   paginationData: paginationReducer,
   authReducerData: authReducer,
+  assignGroupData: assignGroupReducer,
+  modalProjectData: modalProjectReducer,
 };
 
 //  actions group
@@ -23,4 +30,6 @@ export const actions = {
   authFlow: authFlowActions,
   refetch: refetchActions,
   Pagination: paginationActions,
+  assignGroup: assignGroupActions,
+  modalProject: modalProjectActions,
 };

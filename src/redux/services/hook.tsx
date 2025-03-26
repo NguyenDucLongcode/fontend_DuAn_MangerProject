@@ -11,7 +11,12 @@ import {
   useDeleteRoleMutation,
   useUpdateRoleMutation,
   useCreateRoleMutation,
+  useGetAllRoleByIdGroupQuery,
+  useAssignAddRoleMutation,
+  useAssignRemoveRoleMutation,
 } from "./rolesApi/rolesApi";
+
+import { useGetPaginationProjectQuery } from "./projectApi/projectApi";
 
 const apiHooks = {
   //auth
@@ -32,7 +37,13 @@ const apiHooks = {
     DeleteRole: useDeleteRoleMutation,
     UpdateRole: useUpdateRoleMutation,
     CreateRole: useCreateRoleMutation,
+    GetAllRoleByIdGroup: useGetAllRoleByIdGroupQuery,
+    AssignAddRole: useAssignAddRoleMutation,
+    AssignRemoveRole: useAssignRemoveRoleMutation,
   },
+
+  // projectApi
+  project: { GetPaginationProject: useGetPaginationProjectQuery },
 };
 
 export default apiHooks;

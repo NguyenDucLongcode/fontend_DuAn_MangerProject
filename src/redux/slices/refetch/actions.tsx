@@ -1,3 +1,8 @@
-import { paginationRole, paginationUser } from "./reducers";
+import {
+  paginationRole,
+  paginationUser,
+  paginationAssign,
+  paginationProject,
+} from "./reducers";
 
-export { paginationRole, paginationUser };
+export { paginationRole, paginationUser, paginationAssign, paginationProject };

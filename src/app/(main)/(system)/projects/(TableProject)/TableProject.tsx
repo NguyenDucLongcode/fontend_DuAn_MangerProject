@@ -6,27 +6,26 @@ import { actions } from "@/redux/slices/index";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
 import ReactPaginate from "react-paginate";
-import CreateRole from "../CreateRole/CreateRole";
 
-const TableRoles = () => {
+const TableProject = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   //state
-  const { currentPage, pageSize, filterRole } = useSelector(
+  const { currentPage, pageSize, filterProject } = useSelector(
     (state: RootState) => state.paginationData
   );
 
   // queries
-  const { data: paginationData, refetch: refetchPaginationRole } =
-    apiHooks.roles.GetPaginationRole({
+  const { data: paginationData, refetch: refetchPaginationProject } =
+    apiHooks.project.GetPaginationProject({
       page: currentPage,
       limit: pageSize,
-      url: filterRole.url,
-      description: filterRole.description,
+      name: filterProject.name,
+      description: filterProject.description,
     });
 
   const fieldFilter = [
-    { type: "text", name: "url", placeholder: "Filter Url..." },
+    { type: "text", name: "name", placeholder: "Filter Url..." },
     { type: "text", name: "description", placeholder: "Filter Description..." },
   ];
 
@@ -40,17 +39,21 @@ const TableRoles = () => {
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = event.target;
-    dispatch(actions.Pagination.setFilterRole({ [name]: value }));
+    dispatch(actions.Pagination.setFilterProject({ [name]: value }));
   };
 
   // handle action
   const handleAction = useCallback(
-    (action: string, role: PaginationRoleData) => {
+    (action: string, project: PaginationProjectData) => {
       if (action === "deleteRole") {
-        dispatch(actions.modalRole.show({ data: role, type: "deleteRole" }));
+        dispatch(
+          actions.modalProject.show({ data: project, type: "deleteRole" })
+        );
       }
       if (action === "editRole") {
-        dispatch(actions.modalRole.show({ data: role, type: "editRole" }));
+        dispatch(
+          actions.modalProject.show({ data: project, type: "editRole" })
+        );
       }
     },
     [dispatch]
@@ -58,15 +61,14 @@ const TableRoles = () => {
 
   //useEffects
   useEffect(() => {
-    if (refetchPaginationRole) {
-      dispatch(actions.refetch.paginationRole(refetchPaginationRole)); // lưu hàm refresh pagination vào redux
+    if (refetchPaginationProject) {
+      dispatch(actions.refetch.paginationProject(refetchPaginationProject)); // lưu hàm refresh pagination vào redux
     }
-  }, [dispatch, refetchPaginationRole]);
+  }, [dispatch, refetchPaginationProject]);
 
   return (
     <div className="table-container mt-4 container">
       {/* create Role */}
-      <CreateRole />
 
       {/* Table */}
       <Table responsive className="custom-table">
@@ -90,22 +92,22 @@ const TableRoles = () => {
           </tr>
         </thead>
         <tbody>
-          {paginationData?.data.map((role, index) => {
+          {paginationData?.data.map((project, index) => {
             return (
               <tr key={`${index}-role`}>
                 <td>{index + 1 + (currentPage - 1) * pageSize}</td>
-                <td>{role.url}</td>
-                <td>{role.description}</td>
+                <td>{project.name}</td>
+                <td>{project.description}</td>
                 <td>
                   <button
                     className="btn btn-warning me-2"
-                    onClick={() => handleAction("editRole", role)}
+                    onClick={() => handleAction("editRole", project)}
                   >
                     Edit
                   </button>
                   <button
                     className="btn btn-danger"
-                    onClick={() => handleAction("deleteRole", role)}
+                    onClick={() => handleAction("deleteRole", project)}
                   >
                     Delete
                   </button>
@@ -131,4 +133,4 @@ const TableRoles = () => {
     </div>
   );
 };
-export default TableRoles;
+export default TableProject;

@@ -11,8 +11,19 @@ const refetchSlice = createSlice({
     paginationRole: (state, action: PayloadAction<() => void>) => {
       state.refetchPaginationRole = action.payload;
     },
+    paginationAssign: (state, action: PayloadAction<() => void>) => {
+      state.refetchPaginationAssign = action.payload;
+    },
+    paginationProject: (state, action: PayloadAction<() => void>) => {
+      state.refetchPaginationProject = action.payload;
+    },
   },
 });
 
-export const { paginationUser, paginationRole } = refetchSlice.actions;
+export const {
+  paginationUser,
+  paginationRole,
+  paginationAssign,
+  paginationProject,
+} = refetchSlice.actions;
 export default refetchSlice.reducer;

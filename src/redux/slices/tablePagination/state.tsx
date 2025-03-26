@@ -12,4 +12,9 @@ export const initialState: PaginationType = {
     url: "",
     description: "",
   },
+
+  filterProject: {
+    name: "",
+    description: "",
+  },
 };

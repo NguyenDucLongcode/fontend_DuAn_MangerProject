@@ -11,6 +11,9 @@ $transition-speed: 0.3s;
   background: $background-dark;
   color: $text-color;
   position: relative;
+  z-index: 999;
+  position: sticky;
+  top: 0;
 
   .logo {
     font-size: 1.5rem;

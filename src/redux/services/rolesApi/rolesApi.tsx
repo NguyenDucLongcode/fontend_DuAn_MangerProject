@@ -40,6 +40,25 @@ export const rolesApi = createApi({
         body: data,
       }),
     }),
+    getAllRoleByIdGroup: builder.query({
+      query: (groupId: number) => ({
+        url: `api/v1/role/getAllRoleByIdGroup?id=${groupId}`,
+        method: "GET",
+      }),
+    }),
+    assignAddRole: builder.mutation({
+      query: (data: object) => ({
+        url: "api/v1/role/assignAddRole",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    assignRemoveRole: builder.mutation({
+      query: ({ id, groupId }: { id: number; groupId: number }) => ({
+        url: `api/v1/role/assignRemoveRole?id=${id}&groupId=${groupId}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
@@ -48,4 +67,7 @@ export const {
   useDeleteRoleMutation,
   useUpdateRoleMutation,
   useCreateRoleMutation,
+  useGetAllRoleByIdGroupQuery,
+  useAssignAddRoleMutation,
+  useAssignRemoveRoleMutation,
 } = rolesApi;

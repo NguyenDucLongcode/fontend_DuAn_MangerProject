@@ -131,7 +131,7 @@ const TableUser = () => {
                     <td>{index + 1 + (currentPage - 1) * pageSize}</td>
                     <td>{user.email}</td>
                     <td>{user.name}</td>
-                    <td>{user.dataGroup.name}</td>
+                    <td>{user.group.name}</td>
                     <td>
                       <button
                         className="btn btn-info"

@@ -53,6 +53,7 @@ const ModalCreate = () => {
       if (res.errCode === 0) {
         toast.success(res.message);
         if (refetchPaginationUser) {
+          console.log("check refresh");
           refetchPaginationUser();
         }
         handleClose();

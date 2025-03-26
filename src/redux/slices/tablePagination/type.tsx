@@ -3,6 +3,7 @@ export interface PaginationType {
   currentPage: number;
   filterUser: ListFilter;
   filterRole: ListFilterRole;
+  filterProject: ListFilterProject;
 }
 
 interface ListFilter {
@@ -13,5 +14,10 @@ interface ListFilter {
 
 interface ListFilterRole {
   url: string;
+  description: string;
+}
+
+interface ListFilterProject {
+  name: string;
   description: string;
 }

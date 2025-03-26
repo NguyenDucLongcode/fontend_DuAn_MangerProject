@@ -18,9 +18,17 @@ const PaginationSlice = createSlice({
     setFilterRole: (state, action) => {
       state.filterRole = { ...state.filterRole, ...action.payload };
     },
+    setFilterProject: (state, action) => {
+      state.filterProject = { ...state.filterProject, ...action.payload };
+    },
   },
 });
 
-export const { setPageSize, setCurrentPage, setFilterUser, setFilterRole } =
-  PaginationSlice.actions;
+export const {
+  setPageSize,
+  setCurrentPage,
+  setFilterUser,
+  setFilterRole,
+  setFilterProject,
+} = PaginationSlice.actions;
 export default PaginationSlice.reducer;

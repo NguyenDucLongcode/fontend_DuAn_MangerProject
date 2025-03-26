@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 
 // list route project
-const PROTECTED_ROUTES = ["/users", "/roles"];
+const PROTECTED_ROUTES = ["/users", "/roles", "/assign-group"];
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();

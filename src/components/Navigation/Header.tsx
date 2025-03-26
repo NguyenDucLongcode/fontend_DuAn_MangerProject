@@ -13,14 +13,35 @@ import { useDispatch } from "react-redux";
 const Header = () => {
   // logic redux
   const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((state: RootState) => {
+  const { isAuthenticated, account } = useSelector((state: RootState) => {
     return state.authReducerData;
   });
   // react state
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  let menuItems: string[] = [];
+  let menuUrls: string[] = [];
+  // Generate menu items and urls based on account's role
 
-  const menuItems: string[] = ["Home", "Users", "Roles", "Contact"];
-  const menuUrls: string[] = ["/", "/users", "/roles", "/contact"];
+  if (isAuthenticated) {
+    switch (account?.data?.name) {
+      case "Admin":
+        menuItems = ["Home", "Users", "Projects", "Roles", "Assign-group"];
+        menuUrls = ["/", "/users", "/projects", "/roles", "/assign-group"];
+        break;
+      case "Leader":
+        menuItems = ["Home", "Users", "Projects"];
+        menuUrls = ["/", "/users", "/projects"];
+        break;
+      case "Dev":
+        menuItems = ["Home", "Users", "Roles", "Projects"];
+        menuUrls = ["/", "/users", "/roles", "/projects"];
+        break;
+    }
+  } else {
+    menuItems = ["Home", "Users", "Projects"];
+    menuUrls = ["/", "/users", "/projects"];
+  }
+
   const pathname = usePathname();
   const router = useRouter();
 
