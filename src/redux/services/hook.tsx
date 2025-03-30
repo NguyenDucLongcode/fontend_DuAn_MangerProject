@@ -1,4 +1,8 @@
-import { useLoginMutation, useRegisterMutation } from "./authApi/authApi";
+import {
+  useLoginMutation,
+  useRegisterMutation,
+  useLogoutMutation,
+} from "./authApi/authApi";
 import {
   useGetPaginationQuery,
   useDeleteUserMutation,
@@ -20,7 +24,11 @@ import { useGetPaginationProjectQuery } from "./projectApi/projectApi";
 
 const apiHooks = {
   //auth
-  auth: { Login: useLoginMutation, Register: useRegisterMutation },
+  auth: {
+    Login: useLoginMutation,
+    Register: useRegisterMutation,
+    logout: useLogoutMutation,
+  },
 
   // userApi
   user: {

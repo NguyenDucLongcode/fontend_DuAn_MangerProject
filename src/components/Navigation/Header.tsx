@@ -4,11 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import "./Header.scss";
 import Image from "next/image";
-import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
 import { actions } from "@/redux/slices/index";
-import { useDispatch } from "react-redux";
+import { apiHooks } from "@/redux/services";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const Header = () => {
   // logic redux
@@ -16,6 +17,8 @@ const Header = () => {
   const { isAuthenticated, account } = useSelector((state: RootState) => {
     return state.authReducerData;
   });
+
+  const [userLogout] = apiHooks.auth.logout();
   // react state
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   let menuItems: string[] = [];
@@ -50,9 +53,17 @@ const Header = () => {
     setMenuOpen((prevState) => !prevState);
   };
 
-  const handlerLogout = (): void => {
-    dispatch(actions.auth.logout());
-    router.push("/login");
+  const handlerLogout = async () => {
+    try {
+      const res = await userLogout({}).unwrap();
+      if (res.errCode === 0) {
+        dispatch(actions.auth.logout());
+        toast.success(res.message);
+        router.push("/login");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

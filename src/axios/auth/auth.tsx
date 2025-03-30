@@ -7,3 +7,13 @@ export const fetchUserAccountCookies = async () => {
     console.log(error);
   }
 };
+
+export const refresh_Token = async () => {
+  try {
+    return await axiosClient.post("api/v1/refresh-token");
+  } catch (error) {
+    console.log(error);
+    console.error("Lỗi refresh token:", error);
+    throw error;
+  }
+};
