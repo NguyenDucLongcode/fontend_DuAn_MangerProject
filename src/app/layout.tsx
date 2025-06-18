@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import "@/styles/globals.css";
+import ReduxProvider from "@/lib/redux/provider";
+import { Bounce, ToastContainer } from "react-toastify";
+import ClientInitDeviceId from "@/components/ClientInitDeviceId";
+import RefreshTokenGate from "@/components/RefreshTokenGate";
+import "react-datepicker/dist/react-datepicker.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +32,26 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <ReduxProvider>
+          {/* reder DeviceId uuidv for Device */}
+          <ClientInitDeviceId />
+          {/* refresh data user when reload page */}
+          <RefreshTokenGate> {children}</RefreshTokenGate>
+        </ReduxProvider>
+        {/* Toast */}
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Bounce}
+        />
       </body>
     </html>
   );
