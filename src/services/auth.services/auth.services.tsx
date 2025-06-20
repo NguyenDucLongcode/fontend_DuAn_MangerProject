@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/axios/axios.ts"; // CHÍNH XÁC
+import axiosInstance from "@/lib/axios/axios.ts";
 import { LoginResponse, PayloadLogin, ReloadPageResponse } from "./type";
 import { isAxiosError } from "axios";
 import axios from "axios";
@@ -26,8 +26,6 @@ export const handlerLogin = async (
 export const refresh_token = async (): Promise<LoginResponse> => {
   try {
     const deviceId = localStorage.getItem("deviceId");
-    console.log("cgcj devicedId", deviceId);
-
     const res = await axios.post(
       "/auth/refresh-token",
       {},
@@ -41,8 +39,6 @@ export const refresh_token = async (): Promise<LoginResponse> => {
         },
       }
     );
-
-    console.log("chẹc res token", res);
 
     return res.data;
   } catch (err) {

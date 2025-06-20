@@ -10,7 +10,7 @@ const AvatarUser = ({ size = 40 }: Props) => {
   return (
     <div>
       <Avatar
-        src={accountUser?.avatar_url || "/public/avatar/avatar.png"}
+        src={accountUser?.avatar_url || "/avatar/avatar.png"}
         size={size}
       />
     </div>

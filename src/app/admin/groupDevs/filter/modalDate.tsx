@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { useAppDispatch } from "@/lib/redux/hooks";
-import { setShowModalUser } from "@/lib/redux/slices/modal/action";
+import { setShowModalGroup } from "@/lib/redux/slices/modal/action";
 import { RootState } from "@/lib/redux/store";
 import {
   Dialog,
@@ -22,10 +22,10 @@ import { CalendarCheck } from "lucide-react";
 import { setFromDate, setToDate } from "@/lib/redux/slices/datePick/reducer";
 import { toast } from "react-toastify";
 
-export default function ModalUserFilterDate() {
+export default function ModalGroupFilterDate() {
   const dispatch = useAppDispatch();
   const isOpen = useSelector(
-    (state: RootState) => state.modal.modalUser.isFilterDateUser
+    (state: RootState) => state.modal.modalUser.isFilterDateGroup
   );
 
   const startDateRef = useRef<InstanceType<typeof DatePicker> | null>(null);
@@ -43,7 +43,7 @@ export default function ModalUserFilterDate() {
   };
 
   const CloseModal = () => {
-    dispatch(setShowModalUser.filterDate(false));
+    dispatch(setShowModalGroup.filterDate(false));
   };
 
   //handle Click icon

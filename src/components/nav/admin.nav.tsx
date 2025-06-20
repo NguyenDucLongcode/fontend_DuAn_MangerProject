@@ -10,6 +10,7 @@ import AvatarDropdown from "../avatar/admin/AvatarAdminDropdown";
 const navLinksLeft = [
   { label: "Dashboard", href: "/admin/dashboard" },
   { label: "Users", href: "/admin/users" },
+  { label: "GroupDevs", href: "/admin/groupDevs" },
 ];
 
 const navLinksRight = [{ label: "Logout", href: "/logout" }];

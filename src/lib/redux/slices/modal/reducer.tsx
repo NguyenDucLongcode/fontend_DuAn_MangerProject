@@ -5,8 +5,9 @@ const ModalSlice = createSlice({
   name: "modal",
   initialState,
   reducers: {
+    //user
     setShowModalUserFilterDate: (state, action: PayloadAction<boolean>) => {
-      state.modalUser.isFilterDate = action.payload;
+      state.modalUser.isFilterDateUser = action.payload;
     },
     setShowModalUserUpdate: (state, action: PayloadAction<boolean>) => {
       state.modalUser.isUpdateUser = action.payload;
@@ -17,13 +18,34 @@ const ModalSlice = createSlice({
     setShowModalUserCreate: (state, action: PayloadAction<boolean>) => {
       state.modalUser.isCreateUser = action.payload;
     },
+
+    // group Dev
+    setShowModalGroupUpdate: (state, action: PayloadAction<boolean>) => {
+      state.modalUser.isUpdateGroup = action.payload;
+    },
+    setShowModalGroupCreate: (state, action: PayloadAction<boolean>) => {
+      state.modalUser.isCreategroup = action.payload;
+    },
+    setShowModalGroupFilterDate: (state, action: PayloadAction<boolean>) => {
+      state.modalUser.isFilterDateGroup = action.payload;
+    },
+    setShowModalGroupDelete: (state, action: PayloadAction<boolean>) => {
+      state.modalUser.isDeleteGroup = action.payload;
+    },
   },
 });
 
 export const {
+  //user
   setShowModalUserFilterDate,
   setShowModalUserUpdate,
   setShowModalUserDelete,
   setShowModalUserCreate,
+
+  // group dev
+  setShowModalGroupFilterDate,
+  setShowModalGroupCreate,
+  setShowModalGroupUpdate,
+  setShowModalGroupDelete,
 } = ModalSlice.actions;
 export default ModalSlice.reducer;

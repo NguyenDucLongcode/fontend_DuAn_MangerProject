@@ -2,8 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { initialState } from "./state";
 import { InforUser } from "./type";
 
-const ModalSlice = createSlice({
-  name: "modal",
+const UserSlice = createSlice({
+  name: "use",
   initialState,
   reducers: {
     setInforUser: (state, action: PayloadAction<InforUser>) => {
@@ -12,5 +12,5 @@ const ModalSlice = createSlice({
   },
 });
 
-export const { setInforUser } = ModalSlice.actions;
-export default ModalSlice.reducer;
+export const { setInforUser } = UserSlice.actions;
+export default UserSlice.reducer;

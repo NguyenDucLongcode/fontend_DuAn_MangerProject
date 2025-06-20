@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
@@ -19,7 +17,7 @@ export function Avatar({
   return (
     <div
       className={cn(
-        "rounded-full overflow-hidden border-2 border-gray-300 shadow-sm",
+        "rounded-full overflow-hidden border-2 border-white bg-white shadow-md",
         className
       )}
       style={{
@@ -28,11 +26,11 @@ export function Avatar({
       }}
     >
       <Image
-        src={src || "/public/avatar/avatar.png"}
+        src={src || "/avatar/avatar.png"}
         alt={alt}
         width={size}
         height={size}
-        className="object-cover"
+        className="object-cover w-full h-full"
         priority
       />
     </div>

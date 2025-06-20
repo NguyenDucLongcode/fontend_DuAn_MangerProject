@@ -6,28 +6,28 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SkewButton } from "@/components/ui/skewButton/skewButton";
 
-import { GetUserPagination } from "@/services/user.servies/user.services";
-import { AccountUserPagination } from "@/services/user.servies/type";
 import ReactPaginate from "react-paginate";
-import { formatISOToDate } from "@/utils/formatDate";
 import { useAppDispatch } from "@/lib/redux/hooks";
-import { setShowModalUser } from "@/lib/redux/slices/modal/action";
+import { setShowModalGroup } from "@/lib/redux/slices/modal/action";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/redux/store";
 
 import Select from "react-select";
 import { SingleValue } from "react-select";
 import { useRouter } from "next/navigation";
-import ModalUpdateUser from "./update/modalUpdate";
-import ModalUserFilterDate from "./filter/modalDate";
-import { setInforUser } from "@/lib/redux/slices/user/reducer";
-import { InforUser } from "@/lib/redux/slices/user/type";
-import ModalDeleteUser from "./delete/modalDelete";
-import ModalCreateUser from "./create/modalCreate";
+import { GetGroupDevPagination } from "@/services/groupDev.services/groupDev.services";
+import { GroupDev } from "@/services/groupDev.services/type";
+import { formatISOToDate } from "@/utils/formatDate";
+import ModalGroupFilterDate from "./filter/modalDate";
+import ModalCreateGroup from "./create/modalCreate";
+import ModalUpdateGroupDev from "./update/modalUpdate";
+import { InforGroup } from "@/lib/redux/slices/groupDev/type";
+import { setInforGroupDev } from "@/lib/redux/slices/groupDev/reducer";
+import ModalDeleteGroupDev from "./delete/modalDelete";
 
 type OptionType = { value: string; label: string };
 
-const TableUser = () => {
+const TableGroupDevs = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { fromDate, toDate } = useSelector(
@@ -36,15 +36,14 @@ const TableUser = () => {
 
   const LIMIT = 7;
   const options: OptionType[] = [
-    { value: "", label: "All Role" },
-    { value: "ADMIN", label: "ADMIN" },
-    { value: "LEADER", label: "LEADER" },
-    { value: "CODER", label: "CODER" },
-    { value: "CUSTOMER", label: "CUSTOMER" },
+    { value: "", label: "Hiển Thị" },
+    { value: "PRIVATE", label: "PRIVATE" },
+    { value: "PUBLIC", label: "PUBLIC" },
+    { value: "RESTRICTED", label: "RESTRICTED" },
   ];
 
   // State
-  const [users, setUsers] = useState<AccountUserPagination[]>([]);
+  const [groupDevs, setGroupDevs] = useState<GroupDev[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(1);
@@ -52,7 +51,7 @@ const TableUser = () => {
 
   const [input, setInput] = useState({
     name: "",
-    email: "",
+    maxMembers: "",
   }); // For text input
 
   const [selectedOption, setSelectedOption] =
@@ -61,9 +60,8 @@ const TableUser = () => {
   const searchParams = useMemo(
     () => ({
       name: input.name,
-      email: input.email,
-      role: selectedOption?.value || undefined,
-      isActive: true,
+      maxMembers: input.maxMembers || undefined,
+      visibility: selectedOption?.value || undefined,
       fromDate: fromDate || undefined,
       toDate: toDate || undefined,
     }),
@@ -87,12 +85,12 @@ const TableUser = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await GetUserPagination({
+        const res = await GetGroupDevPagination({
           limit: LIMIT,
           page,
           ...debouncedParams,
         });
-        setUsers(res.data.users);
+        setGroupDevs(res.data.groupDevs);
         setTotalPages(res.data.totalPages);
       } catch (err) {
         console.error("Fetch error:", err);
@@ -117,14 +115,14 @@ const TableUser = () => {
     setPage(event.selected + 1);
   };
 
-  const handleUpdateUser = (user: InforUser) => {
-    dispatch(setShowModalUser.userUpdate(true));
-    dispatch(setInforUser(user));
+  const handleUpdateGroup = (user: InforGroup) => {
+    dispatch(setShowModalGroup.groupUpdate(true));
+    dispatch(setInforGroupDev(user));
   };
 
-  const handleDeleteUser = (user: InforUser) => {
-    dispatch(setShowModalUser.userDelete(true));
-    dispatch(setInforUser(user));
+  const handleDelateGroup = (user: InforGroup) => {
+    dispatch(setShowModalGroup.groupDelete(true));
+    dispatch(setInforGroupDev(user));
   };
 
   // JSX
@@ -136,9 +134,9 @@ const TableUser = () => {
         <div className="flex justify-center md:justify-start">
           <SkewButton
             style={{ width: "200px", height: "40px" }}
-            onClick={() => dispatch(setShowModalUser.userCreate(true))}
+            onClick={() => dispatch(setShowModalGroup.groupCreate(true))}
           >
-            Thêm người dùng
+            Thêm Nhóm
           </SkewButton>
         </div>
 
@@ -152,15 +150,16 @@ const TableUser = () => {
             className="w-full sm:w-40"
           />
           <Input
-            placeholder="Tìm email..."
-            name="email"
-            value={input.email}
+            type="number"
+            placeholder="Số thành viên..."
+            name="maxMembers"
+            value={input.maxMembers}
             onChange={handleSearchChange}
             className="w-full sm:w-40"
           />
           <SkewButton
             style={{ width: "220px" }}
-            onClick={() => dispatch(setShowModalUser.filterDate(true))}
+            onClick={() => dispatch(setShowModalGroup.filterDate(true))}
           >
             Tìm theo ngày đăng kí
           </SkewButton>
@@ -173,13 +172,12 @@ const TableUser = () => {
             <tr>
               <th className="p-3 text-center">No</th>
               <th className="p-3 text-center">Tên</th>
-              <th className="p-3 text-center">Email</th>
-              <th className="p-3 text-center">Điện thoại</th>
+              <th className="p-3 text-center">Số Thành viên</th>
               <th className="p-3 text-center">Ngày đăng kí</th>
               <th className="p-3 text-center">
                 {/* select */}
                 <Select
-                  placeholder="Vai trò"
+                  placeholder="Hiển thị..."
                   value={selectedOption}
                   onChange={setSelectedOption}
                   options={options}
@@ -203,7 +201,7 @@ const TableUser = () => {
             </tr>
           </thead>
           <tbody className="text-black">
-            {!loading && users.length === 0 && (
+            {!loading && groupDevs.length === 0 && (
               <tr>
                 <td colSpan={7} className="text-center py-6 text-gray-500">
                   Không tìm thấy người dùng nào.
@@ -220,25 +218,26 @@ const TableUser = () => {
                     ))}
                   </tr>
                 ))
-              : users.map((user, index) => (
+              : groupDevs.map((group, index) => (
                   <tr
-                    key={user.id}
+                    key={group.id}
                     className="transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl hover:-translate-y-0.5 hover:bg-blue-100 hover:z-10 hover:relative bg-white border-b border-gray-200"
                   >
                     <td className="p-3 font-medium">
                       {(page - 1) * LIMIT + index + 1}
                     </td>
-                    <td className="p-3">{user.name}</td>
-                    <td className="p-3">{user.email}</td>
-                    <td className="p-3">{user.phone}</td>
-                    <td className="p-3">{formatISOToDate(user.createdAt)}</td>
-                    <td className="p-3">{user.role}</td>
+                    <td className="p-3">{group.name}</td>
+                    <td className="p-3">{group.maxMembers}</td>
+                    <td className="p-3">{formatISOToDate(group.createdAt)}</td>
+                    <td className="p-3">{group.visibility}</td>
                     {/* action */}
                     <td className="p-3 text-center space-x-2">
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => router.push(`/admin/users/${user.id}`)}
+                        onClick={() =>
+                          router.push(`/admin/groupDevs/${group.id}`)
+                        }
                       >
                         Xem
                       </Button>
@@ -246,7 +245,7 @@ const TableUser = () => {
                         variant="secondary"
                         size="sm"
                         onClick={() => {
-                          handleUpdateUser(user);
+                          handleUpdateGroup(group);
                         }}
                       >
                         Sửa
@@ -255,7 +254,7 @@ const TableUser = () => {
                         variant="destructive"
                         size="sm"
                         onClick={() => {
-                          handleDeleteUser(user);
+                          handleDelateGroup(group);
                         }}
                       >
                         Xóa
@@ -287,18 +286,20 @@ const TableUser = () => {
         />
       </div>
 
-      <ModalUserFilterDate />
-      <ModalUpdateUser
+      <ModalGroupFilterDate />
+
+      <ModalCreateGroup
         onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
       />
-      <ModalDeleteUser
+      <ModalUpdateGroupDev
         onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
       />
-      <ModalCreateUser
+
+      <ModalDeleteGroupDev
         onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
       />
     </div>
   );
 };
 
-export default TableUser;
+export default TableGroupDevs;
