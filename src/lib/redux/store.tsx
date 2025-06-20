@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/auth/reducer";
+import userReducer from "./slices/user/reducer";
 import modalReducer from "./slices/modal/reducer";
 import datePickerReducer from "./slices/datePick/reducer";
 
@@ -8,6 +9,7 @@ export const store = configureStore({
     auth: authReducer,
     modal: modalReducer,
     datePicker: datePickerReducer,
+    user: userReducer,
   },
 });
 

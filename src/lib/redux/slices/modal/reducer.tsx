@@ -11,9 +11,19 @@ const ModalSlice = createSlice({
     setShowModalUserUpdate: (state, action: PayloadAction<boolean>) => {
       state.modalUser.isUpdateUser = action.payload;
     },
+    setShowModalUserDelete: (state, action: PayloadAction<boolean>) => {
+      state.modalUser.isDeleteUser = action.payload;
+    },
+    setShowModalUserCreate: (state, action: PayloadAction<boolean>) => {
+      state.modalUser.isCreateUser = action.payload;
+    },
   },
 });
 
-export const { setShowModalUserFilterDate, setShowModalUserUpdate } =
-  ModalSlice.actions;
+export const {
+  setShowModalUserFilterDate,
+  setShowModalUserUpdate,
+  setShowModalUserDelete,
+  setShowModalUserCreate,
+} = ModalSlice.actions;
 export default ModalSlice.reducer;

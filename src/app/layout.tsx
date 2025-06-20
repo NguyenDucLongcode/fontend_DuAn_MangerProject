@@ -6,6 +6,7 @@ import { Bounce, ToastContainer } from "react-toastify";
 import ClientInitDeviceId from "@/components/ClientInitDeviceId";
 import RefreshTokenGate from "@/components/RefreshTokenGate";
 import "react-datepicker/dist/react-datepicker.css";
+import "@/styles/nprogress/nprogress.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

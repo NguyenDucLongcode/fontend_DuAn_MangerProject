@@ -25,11 +25,6 @@ export default function RefreshTokenGate({
       }
 
       try {
-        // const res = await GetUserReloadPage();
-        // if (res.statusCode === 200) {
-        //   const { access_token, user } = res.data;
-        //   dispatch(login({ access_token, user }));
-        // }
         const res = await refresh_token();
         if (res.statusCode === 200) {
           const { access_token } = res.data;

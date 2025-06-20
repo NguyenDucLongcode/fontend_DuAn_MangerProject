@@ -20,6 +20,10 @@ import { SingleValue } from "react-select";
 import { useRouter } from "next/navigation";
 import ModalUpdateUser from "./update/modalUpdate";
 import ModalUserFilterDate from "./filter/modalDate";
+import { setInforUser } from "@/lib/redux/slices/user/reducer";
+import { InforUser } from "@/lib/redux/slices/user/type";
+import ModalDeleteUser from "./delete/modalDelete";
+import ModalCreateUser from "./create/modalCreate";
 
 type OptionType = { value: string; label: string };
 
@@ -44,15 +48,20 @@ const TableUser = () => {
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(1);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  const [input, setInput] = useState(""); // For text input
+  const [input, setInput] = useState({
+    name: "",
+    email: "",
+  }); // For text input
+
   const [selectedOption, setSelectedOption] =
     useState<SingleValue<OptionType>>(null);
 
   const searchParams = useMemo(
     () => ({
-      name: input,
-      email: input,
+      name: input.name,
+      email: input.email,
       role: selectedOption?.value || undefined,
       isActive: true,
       fromDate: fromDate || undefined,
@@ -93,34 +102,59 @@ const TableUser = () => {
     };
 
     fetchData();
-  }, [page, debouncedParams]);
+  }, [page, debouncedParams, refreshTrigger]);
 
   // Handler
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value);
+    const { name, value } = e.target;
+    setInput((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handlePageClick = (event: { selected: number }) => {
     setPage(event.selected + 1);
   };
 
+  const handleUpdateUser = (user: InforUser) => {
+    dispatch(setShowModalUser.userUpdate(true));
+    dispatch(setInforUser(user));
+  };
+
   // JSX
   return (
-    <div className="p-4 animate-fade-in-up">
-      <h2 className="text-2xl font-bold mb-4 text-blue-700">Bảng người dùng</h2>
-      <div className="flex justify-between gap-4 mb-4">
-        <SkewButton style={{ width: "200px", height: "40px" }}>
-          Thêm người dùng
-        </SkewButton>
+    <div className="p-5.5 animate-fade-in-up">
+      <h2 className="text-2xl font-bold mb-1 text-blue-700">Bảng người dùng</h2>
+      <div className="flex flex-col md:flex-row md:justify-between gap-4 mb-4">
+        {/* Button Thêm người dùng */}
+        <div className="flex justify-center md:justify-start">
+          <SkewButton
+            style={{ width: "200px", height: "40px" }}
+            onClick={() => dispatch(setShowModalUser.userCreate(true))}
+          >
+            Thêm người dùng
+          </SkewButton>
+        </div>
 
-        <div className="flex gap-4">
+        {/* Tìm kiếm và lọc theo ngày */}
+        <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
           <Input
-            placeholder="Tìm tên, email..."
-            value={input}
+            placeholder="Tìm tên..."
+            name="name"
+            value={input.name}
             onChange={handleSearchChange}
+            className="w-full sm:w-40"
+          />
+          <Input
+            placeholder="Tìm email..."
+            name="email"
+            value={input.email}
+            onChange={handleSearchChange}
+            className="w-full sm:w-40"
           />
           <SkewButton
-            style={{ width: "250px" }}
+            style={{ width: "220px" }}
             onClick={() => dispatch(setShowModalUser.filterDate(true))}
           >
             Tìm theo ngày đăng kí
@@ -138,6 +172,7 @@ const TableUser = () => {
               <th className="p-3 text-center">Điện thoại</th>
               <th className="p-3 text-center">Ngày đăng kí</th>
               <th className="p-3 text-center">
+                {/* select */}
                 <Select
                   placeholder="Vai trò"
                   value={selectedOption}
@@ -193,6 +228,7 @@ const TableUser = () => {
                     <td className="p-3">{user.phone}</td>
                     <td className="p-3">{formatISOToDate(user.createdAt)}</td>
                     <td className="p-3">{user.role}</td>
+                    {/* action */}
                     <td className="p-3 text-center space-x-2">
                       <Button
                         variant="outline"
@@ -204,13 +240,19 @@ const TableUser = () => {
                       <Button
                         variant="secondary"
                         size="sm"
-                        onClick={() =>
-                          dispatch(setShowModalUser.userUpdate(true))
-                        }
+                        onClick={() => {
+                          handleUpdateUser(user);
+                        }}
                       >
                         Sửa
                       </Button>
-                      <Button variant="destructive" size="sm">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => {
+                          dispatch(setShowModalUser.userDelete(true));
+                        }}
+                      >
                         Xóa
                       </Button>
                     </td>
@@ -241,7 +283,15 @@ const TableUser = () => {
       </div>
 
       <ModalUserFilterDate />
-      <ModalUpdateUser />
+      <ModalUpdateUser
+        onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
+      />
+      <ModalDeleteUser
+        onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
+      />
+      <ModalCreateUser
+        onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
+      />
     </div>
   );
 };

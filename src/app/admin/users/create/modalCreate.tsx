@@ -9,44 +9,49 @@ import {
   Transition,
   TransitionChild,
 } from "@headlessui/react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import { useSelector } from "react-redux";
-import FormUpdateUser from "./formUpdate";
+import FormCreateUser from "./formCreate";
 import { toast } from "react-toastify";
-import {
-  PatchChangeRole,
-  PatchUpdateUser,
-} from "@/services/user.servies/user.services";
+import { isValidEmail, validatePassword } from "@/utils/validateInput";
+import { PotCreateUser } from "@/services/user.servies/user.services";
 
 type Props = {
   onRefresh: () => void;
 };
 
-export default function ModalUpdateUser({ onRefresh }: Props) {
+const initStateCreateUser = {
+  name: "",
+  password: "",
+  email: "",
+  phone: "",
+  address: "",
+  gender: "",
+  role: "",
+  avatar: null as File | null,
+};
+
+export default function ModalCreateUser({ onRefresh }: Props) {
   // state redux
   const dispatch = useAppDispatch();
   const isOpen = useSelector(
-    (state: RootState) => state.modal.modalUser.isUpdateUser
+    (state: RootState) => state.modal.modalUser.isCreateUser
   );
-  const { inforUser } = useSelector((state: RootState) => state.user);
 
-  const [dataUpdateUser, setDataUpdateuser] = useState({
-    id: "",
-    name: "",
-    phone: "",
-    address: "",
-    gender: "",
-    role: "",
-    avatar: null as File | null,
-  });
+  const [dataCreateUser, setDataCreateUser] = useState(initStateCreateUser);
 
   // handler
   const CloseModal = () => {
-    dispatch(setShowModalUser.userUpdate(false));
+    dispatch(setShowModalUser.userCreate(false));
+    setDataCreateUser(initStateCreateUser);
   };
 
   const handleSubmit = async () => {
-    const { name, phone, address, gender, avatar, role } = dataUpdateUser;
+    const { name, phone, gender, password, email } = dataCreateUser;
+
+    if (!isValidEmail(email)) {
+      return toast.error("Vui lòng nhập email đúng định dạng");
+    }
 
     // Validate
     if (!name.trim()) {
@@ -63,72 +68,29 @@ export default function ModalUpdateUser({ onRefresh }: Props) {
       return toast.error("Giới tính phải là Nam hoặc Nữ");
     }
 
-    // Kiểm tra thay đổi
-    const isInfoChanged =
-      inforUser?.name !== name ||
-      inforUser?.phone !== phone ||
-      inforUser?.address !== address ||
-      inforUser?.gender !== gender ||
-      !!avatar;
-
-    const isRoleChanged = inforUser?.role !== role;
-
-    let success = false;
-
-    // Gọi API cập nhật thông tin
-    if (isInfoChanged) {
-      try {
-        const res = await PatchUpdateUser(dataUpdateUser);
-        if (res.statusCode === 200) {
-          toast.success("Sửa thông tin thành công");
-          success = true;
-        } else {
-          const msg =
-            res.data?.message || res.message || "Sửa thông tin thất bại";
-          toast.error(msg);
-        }
-      } catch (err) {
-        console.error("Lỗi cập nhật:", err);
-        toast.error("Đã xảy ra lỗi khi cập nhật thông tin");
-      }
+    if (!validatePassword(password)) {
+      return toast.error(
+        "Mật khẩu phải có ít nhất 8 ký tự, một chữ hoa, một chữ thường, một số và một ký tự đặc biệt"
+      );
     }
 
-    // Gọi API đổi quyền
-    if (isRoleChanged) {
-      try {
-        const res = await PatchChangeRole(dataUpdateUser);
-        if (res.statusCode === 200) {
-          toast.success("Nâng quyền thành công");
-          success = true;
-        } else {
-          toast.error(res.message || "Nâng quyền thất bại");
-        }
-      } catch (err) {
-        console.error("Lỗi nâng quyền:", err);
-        toast.error("Đã xảy ra lỗi khi nâng quyền");
+    // call api
+    try {
+      const res = await PotCreateUser(dataCreateUser);
+      if (res.statusCode === 200) {
+        toast.success("Tạo người dùng thành công");
+        onRefresh();
+        CloseModal();
+      } else {
+        const msg =
+          res.data?.message || res.message || "Tạo người dùng thất bại";
+        toast.error(msg);
       }
-    }
-
-    if (success) {
-      onRefresh();
-      CloseModal();
+    } catch (err) {
+      console.error("Lỗi tạo người dùng:", err);
+      toast.error("Đã xảy ra lỗi khi tạo người dùng");
     }
   };
-
-  // useEffect
-  useEffect(() => {
-    if (inforUser) {
-      setDataUpdateuser({
-        id: inforUser.id || "",
-        name: inforUser.name || "",
-        phone: inforUser.phone || "",
-        address: inforUser.address || "",
-        gender: inforUser.gender || "",
-        role: inforUser.role || "",
-        avatar: null,
-      });
-    }
-  }, [inforUser]);
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -163,9 +125,9 @@ export default function ModalUpdateUser({ onRefresh }: Props) {
               bg-white dark:bg-[#0f172a] rounded-2xl p-8
               border border-gray-200 dark:border-gray-600 shadow-xl"
               >
-                <FormUpdateUser
-                  dataUpdateUser={dataUpdateUser}
-                  setDataUpdateuser={setDataUpdateuser}
+                <FormCreateUser
+                  setDataCreateUser={setDataCreateUser}
+                  dataCreateUser={dataCreateUser}
                 />
 
                 <div className="mt-6 flex flex-col sm:flex-row justify-end gap-3">

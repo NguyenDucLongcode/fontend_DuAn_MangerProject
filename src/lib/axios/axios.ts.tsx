@@ -1,22 +1,44 @@
 import axios from "axios";
+import NProgress from "nprogress";
 import { useDeviceStore } from "../deviceStore";
 import { store } from "@/lib/redux/store";
 import { toast } from "react-toastify";
 import { refresh_token } from "@/services/auth.services/auth.services";
 import { login } from "../redux/slices/auth/reducer";
 import { findUserFromToken } from "@/utils/token/decodeTokenFindUser";
+import { isTokenExpired } from "@/utils/token/jwt";
 
 let isRefreshing = false;
+// config NProgress
+NProgress.configure({
+  showSpinner: false,
+  trickleSpeed: 100,
+});
 
 const axiosInstance = axios.create({
   baseURL:
     process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api/v1",
   withCredentials: true,
+  validateStatus: () => true,
 });
 
 // Request Interceptor
 axiosInstance.interceptors.request.use(async (config) => {
-  const token: string | null = store.getState().auth?.access_token;
+  let token: string | null = store.getState().auth?.access_token;
+
+  // Nếu token tồn tại nhưng đã hết hạn → refresh
+  if (token && isTokenExpired(token)) {
+    try {
+      const res = await refresh_token();
+      if (res.statusCode === 200) {
+        token = res.data.access_token;
+        const user = await findUserFromToken(token);
+        store.dispatch(login({ access_token: token, user }));
+      }
+    } catch (err) {
+      console.error("Token refresh thất bại", err);
+    }
+  }
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -27,12 +49,16 @@ axiosInstance.interceptors.request.use(async (config) => {
     config.headers["x-device-id"] = deviceId || "unknown-device";
   }
 
+  NProgress.start();
   return config;
 });
 
 // Response Interceptor
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    NProgress.done();
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
     const status = error.response?.status;
@@ -70,6 +96,7 @@ axiosInstance.interceptors.response.use(
     if (status === 404) toast.error("Không tìm thấy tài nguyên!");
     if (status === 500) toast.error("Lỗi máy chủ!");
 
+    NProgress.done();
     return Promise.reject(error);
   }
 );

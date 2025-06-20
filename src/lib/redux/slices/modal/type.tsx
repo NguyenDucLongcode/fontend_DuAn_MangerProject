@@ -5,4 +5,6 @@ export interface ModalState {
 interface ModalUser {
   isFilterDate: boolean;
   isUpdateUser: boolean;
+  isDeleteUser: boolean;
+  isCreateUser: boolean;
 }
