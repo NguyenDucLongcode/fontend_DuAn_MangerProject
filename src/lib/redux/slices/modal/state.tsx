@@ -13,5 +13,11 @@ export const initialState: ModalState = {
     isUpdateGroup: false,
     isCreategroup: false,
     isDeleteGroup: false,
+
+    // project
+    isFilterDateProject: false,
+    isUpdateProject: false,
+    isCreateProject: false,
+    isDeleteProject: false,
   },
 };

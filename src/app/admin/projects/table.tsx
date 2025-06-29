@@ -8,7 +8,7 @@ import { SkewButton } from "@/components/ui/skewButton/skewButton";
 
 import ReactPaginate from "react-paginate";
 import { useAppDispatch } from "@/lib/redux/hooks";
-import { setShowModalGroup } from "@/lib/redux/slices/modal/action";
+import { setShowModalProject } from "@/lib/redux/slices/modal/action";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/redux/store";
 
@@ -18,16 +18,18 @@ import { useRouter } from "next/navigation";
 import { GetGroupDevPagination } from "@/services/groupDev.services/groupDev.services";
 import { GroupDev } from "@/services/groupDev.services/type";
 import { formatISOToDate } from "@/utils/formatDate";
-import ModalGroupFilterDate from "./filter/modalDate";
-import ModalCreateGroup from "./create/modalCreate";
-import ModalUpdateGroupDev from "./update/modalUpdate";
-import { InforGroup } from "@/lib/redux/slices/groupDev/type";
-import { setInforGroupDev } from "@/lib/redux/slices/groupDev/reducer";
-import ModalDeleteGroupDev from "./delete/modalDelete";
+import { ProjectPagination } from "@/services/project.services/project.services";
+import { Project } from "@/services/project.services/type";
+import ModalProjectFilterDate from "./filter/modalDate";
+import ModalCreateProject from "./create/modalCreate";
+import { InforProject } from "@/lib/redux/slices/project/type";
+import { setInforProject } from "@/lib/redux/slices/project/reducer";
+import ModalUpdateProject from "./update/modalUpdate";
+import ModalDeleteProject from "./delete/modalDelete";
 
 type OptionType = { value: string; label: string };
 
-const TableGroupDevs = () => {
+const TableProjects = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { fromDate, toDate } = useSelector(
@@ -35,74 +37,34 @@ const TableGroupDevs = () => {
   );
 
   const LIMIT = 7;
-  const options: OptionType[] = [
-    { value: "", label: "Hiển Thị" },
-    { value: "PRIVATE", label: "PRIVATE" },
-    { value: "PUBLIC", label: "PUBLIC" },
-    { value: "RESTRICTED", label: "RESTRICTED" },
-  ];
 
-  // State
-  const [groupDevs, setGroupDevs] = useState<GroupDev[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(1);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  const [input, setInput] = useState({
-    name: "",
-    maxMembers: "",
-  }); // For text input
-
+  // state group
+  const [input, setInput] = useState({ name: "" });
+  const [inputGroupName, setInputGroupName] = useState("");
+  const [groupOptions, setGroupOptions] = useState<OptionType[]>([]);
   const [selectedOption, setSelectedOption] =
     useState<SingleValue<OptionType>>(null);
 
+  // search filter
   const searchParams = useMemo(
     () => ({
       name: input.name,
-      maxMembers: input.maxMembers || undefined,
-      visibility: selectedOption?.value || undefined,
+      groupId: selectedOption?.value || undefined,
       fromDate: fromDate || undefined,
       toDate: toDate || undefined,
     }),
     [input, selectedOption, fromDate, toDate]
   );
 
-  // Debounce
   const [debouncedParams, setDebouncedParams] = useState(searchParams);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedParams(searchParams);
-      setPage(1); // Reset page when filter changes
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [searchParams]);
-
-  // Fetch data
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const res = await GetGroupDevPagination({
-          limit: LIMIT,
-          page,
-          ...debouncedParams,
-        });
-        setGroupDevs(res.data.groupDevs);
-        setTotalPages(res.data.totalPages);
-      } catch (err) {
-        console.error("Fetch error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [page, debouncedParams, refreshTrigger]);
-
-  // Handler
+  // handler
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setInput((prev) => ({
@@ -115,52 +77,100 @@ const TableGroupDevs = () => {
     setPage(event.selected + 1);
   };
 
-  const handleUpdateGroup = (group: InforGroup) => {
-    console.log("group", group);
-    dispatch(setShowModalGroup.groupUpdate(true));
-    dispatch(setInforGroupDev(group));
+  const handleUpdateProject = (project: InforProject) => {
+    dispatch(setShowModalProject.projectUpdate(true));
+    dispatch(setInforProject(project));
   };
 
-  const handleDelateGroup = (group: InforGroup) => {
-    dispatch(setShowModalGroup.groupDelete(true));
-    dispatch(setInforGroupDev(group));
+  const handleDelateProject = (project: InforProject) => {
+    dispatch(setShowModalProject.projectDelete(true));
+    dispatch(setInforProject(project));
   };
 
-  // JSX
+  // useEffect
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedParams(searchParams);
+      setPage(1);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchParams]);
+
+  // Fetch project data
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const res = await ProjectPagination({
+          limit: LIMIT,
+          page,
+          ...debouncedParams,
+        });
+        setProjects(res.data.projects);
+        setTotalPages(res.data.totalPages);
+      } catch (err) {
+        console.error("Lỗi lấy danh sách dự án:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [page, debouncedParams, refreshTrigger]);
+
+  // Fetch group options when input changes
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      try {
+        const res = await GetGroupDevPagination({
+          limit: 10,
+          page: 1,
+          name: inputGroupName,
+          maxMembers: undefined,
+          visibility: undefined,
+          fromDate: undefined,
+          toDate: undefined,
+        });
+
+        const mappedOptions = res.data.groupDevs.map((group: GroupDev) => ({
+          label: group.name,
+          value: group.id,
+        }));
+
+        setGroupOptions(mappedOptions);
+      } catch (err) {
+        console.error("Lỗi lọc nhóm:", err);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [inputGroupName]);
+
   return (
     <div className="p-5.5 animate-fade-in-up">
       <h2 className="text-2xl font-bold mb-1 text-blue-700">Bảng người dùng</h2>
+
       <div className="flex flex-col md:flex-row md:justify-between gap-4 mb-4">
-        {/* Button Thêm người dùng */}
         <div className="flex justify-center md:justify-start">
           <SkewButton
             style={{ width: "200px", height: "40px" }}
-            onClick={() => dispatch(setShowModalGroup.groupCreate(true))}
+            onClick={() => dispatch(setShowModalProject.projectCreate(true))}
           >
             Thêm Nhóm
           </SkewButton>
         </div>
 
-        {/* Tìm kiếm và lọc theo ngày */}
         <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
           <Input
-            placeholder="Tìm tên..."
+            placeholder="Tìm tên dự án..."
             name="name"
             value={input.name}
             onChange={handleSearchChange}
             className="w-full sm:w-40"
           />
-          <Input
-            type="number"
-            placeholder="Số thành viên..."
-            name="maxMembers"
-            value={input.maxMembers}
-            onChange={handleSearchChange}
-            className="w-full sm:w-40"
-          />
           <SkewButton
             style={{ width: "220px" }}
-            onClick={() => dispatch(setShowModalGroup.filterDate(true))}
+            onClick={() => dispatch(setShowModalProject.filterDate(true))}
           >
             Tìm theo ngày đăng kí
           </SkewButton>
@@ -173,16 +183,20 @@ const TableGroupDevs = () => {
             <tr>
               <th className="p-3 text-center">No</th>
               <th className="p-3 text-center">Tên</th>
-              <th className="p-3 text-center">Số Thành viên</th>
               <th className="p-3 text-center">Ngày đăng kí</th>
               <th className="p-3 text-center">
-                {/* select */}
                 <Select
-                  placeholder="Hiển thị..."
+                  placeholder="Tìm nhóm dev..."
                   value={selectedOption}
                   onChange={setSelectedOption}
-                  options={options}
+                  onInputChange={(value) => setInputGroupName(value)}
+                  options={groupOptions}
+                  isClearable
                   styles={{
+                    // container: (base) => ({
+                    //   ...base,
+                    //   // width: 220,
+                    // }),
                     singleValue: (base) => ({ ...base, color: "gray" }),
                     option: (base, state) => ({
                       ...base,
@@ -198,13 +212,14 @@ const TableGroupDevs = () => {
                   menuPosition="fixed"
                 />
               </th>
+              <th className="p-3 text-center">Thành viên</th>
               <th className="p-3 text-center">Hành động</th>
             </tr>
           </thead>
           <tbody className="text-black">
-            {!loading && groupDevs.length === 0 && (
+            {!loading && projects.length === 0 && (
               <tr>
-                <td colSpan={7} className="text-center py-6 text-gray-500">
+                <td colSpan={5} className="text-center py-6 text-gray-500">
                   Không tìm thấy người dùng nào.
                 </td>
               </tr>
@@ -219,25 +234,30 @@ const TableGroupDevs = () => {
                     ))}
                   </tr>
                 ))
-              : groupDevs.map((group, index) => (
+              : projects.map((project, index) => (
                   <tr
-                    key={group.id}
+                    key={project.id}
                     className="transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl hover:-translate-y-0.5 hover:bg-blue-100 hover:z-10 hover:relative bg-white border-b border-gray-200"
                   >
                     <td className="p-3 font-medium">
                       {(page - 1) * LIMIT + index + 1}
                     </td>
-                    <td className="p-3">{group.name}</td>
-                    <td className="p-3">{group.maxMembers}</td>
-                    <td className="p-3">{formatISOToDate(group.createdAt)}</td>
-                    <td className="p-3">{group.visibility}</td>
-                    {/* action */}
+                    <td className="p-3">{project.name}</td>
+
+                    <td className="p-3 ">
+                      {formatISOToDate(project.createdAt)}
+                    </td>
+                    <td className="p-3">
+                      {project.group?.name ?? "Không có nhóm"}
+                    </td>
+                    <td className="p-3">{project.group.maxMembers ?? "0"}</td>
+
                     <td className="p-3 text-center space-x-2">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() =>
-                          router.push(`/admin/groupDevs/${group.id}`)
+                          router.push(`/admin/projects/${project.id}`)
                         }
                       >
                         Xem
@@ -246,7 +266,7 @@ const TableGroupDevs = () => {
                         variant="secondary"
                         size="sm"
                         onClick={() => {
-                          handleUpdateGroup(group);
+                          handleUpdateProject(project);
                         }}
                       >
                         Sửa
@@ -255,7 +275,7 @@ const TableGroupDevs = () => {
                         variant="destructive"
                         size="sm"
                         onClick={() => {
-                          handleDelateGroup(group);
+                          handleDelateProject(project);
                         }}
                       >
                         Xóa
@@ -267,7 +287,20 @@ const TableGroupDevs = () => {
         </table>
       </div>
 
-      {/* Pagination */}
+      {/* modal */}
+      <ModalProjectFilterDate />
+      <ModalCreateProject
+        onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
+      />
+
+      <ModalUpdateProject
+        onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
+      />
+
+      <ModalDeleteProject
+        onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
+      />
+
       <div className="flex justify-center mt-6">
         <ReactPaginate
           breakLabel="..."
@@ -286,21 +319,8 @@ const TableGroupDevs = () => {
           breakClassName="px-2"
         />
       </div>
-
-      <ModalGroupFilterDate />
-
-      <ModalCreateGroup
-        onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
-      />
-      <ModalUpdateGroupDev
-        onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
-      />
-
-      <ModalDeleteGroupDev
-        onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
-      />
     </div>
   );
 };
 
-export default TableGroupDevs;
+export default TableProjects;

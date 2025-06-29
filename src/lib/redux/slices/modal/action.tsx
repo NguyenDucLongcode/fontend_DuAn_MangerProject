@@ -7,6 +7,10 @@ import {
   setShowModalGroupCreate,
   setShowModalGroupUpdate,
   setShowModalGroupDelete,
+  setShowModalProjectUpdate,
+  setShowModalProjectCreate,
+  setShowModalProjectFilterDate,
+  setShowModalProjectDelete,
 } from "./reducer";
 
 export const setShowModalUser = {
@@ -21,4 +25,11 @@ export const setShowModalGroup = {
   groupUpdate: setShowModalGroupUpdate,
   groupCreate: setShowModalGroupCreate,
   groupDelete: setShowModalGroupDelete,
+};
+
+export const setShowModalProject = {
+  projectUpdate: setShowModalProjectUpdate,
+  projectCreate: setShowModalProjectCreate,
+  filterDate: setShowModalProjectFilterDate,
+  projectDelete: setShowModalProjectDelete,
 };

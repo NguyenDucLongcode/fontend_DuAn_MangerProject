@@ -5,6 +5,7 @@ import {
   CreateGroupResponse,
   DeleteGroupResponse,
   FilterInput,
+  GetProjectToGroupResponse,
   GroupDevDetailResponse,
   PaginationResponse,
   UpdateGroupPayload,
@@ -22,6 +23,26 @@ export const GetGroupDetail = async (
       console.error("API error response", err.response);
       throw new Error(
         err.response?.data?.message || "Get group Dev detail failed"
+      );
+    } else {
+      throw new Error("An unexpected error occurred");
+    }
+  }
+};
+
+export const GetListMembers = async (
+  groupId: string
+): Promise<GroupDevDetailResponse> => {
+  try {
+    const res = await axiosInstance.get(
+      `/group-member/list?groupId=${groupId}`
+    );
+    return res.data;
+  } catch (err) {
+    if (isAxiosError(err)) {
+      console.error("API error response", err.response);
+      throw new Error(
+        err.response?.data?.message || "Get list member in group failed"
       );
     } else {
       throw new Error("An unexpected error occurred");
@@ -126,6 +147,27 @@ export const DeleteGroupDev = async (
     if (isAxiosError(err)) {
       console.error("API error response", err.response);
       throw new Error(err.response?.data?.message || "Delete group failed");
+    } else {
+      throw new Error("An unexpected error occurred");
+    }
+  }
+};
+
+export const GetProjectFromGroupId = async (
+  groupId: string
+): Promise<GetProjectToGroupResponse> => {
+  try {
+    const res = await axiosInstance.get(
+      `/group-dev/findProject_GroupId?id=${groupId}`
+    );
+
+    return res.data;
+  } catch (err) {
+    if (isAxiosError(err)) {
+      console.error("API error response", err.response);
+      throw new Error(
+        err.response?.data?.message || "Get project to group failed"
+      );
     } else {
       throw new Error("An unexpected error occurred");
     }

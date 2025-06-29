@@ -11,6 +11,7 @@ const navLinksLeft = [
   { label: "Dashboard", href: "/admin/dashboard" },
   { label: "Users", href: "/admin/users" },
   { label: "GroupDevs", href: "/admin/groupDevs" },
+  { label: "Projects", href: "/admin/projects" },
 ];
 
 const navLinksRight = [{ label: "Logout", href: "/logout" }];

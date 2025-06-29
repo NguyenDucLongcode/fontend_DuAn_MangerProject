@@ -14,4 +14,10 @@ interface ModalUser {
   isUpdateGroup: boolean;
   isCreategroup: boolean;
   isDeleteGroup: boolean;
+
+  // groupDev
+  isFilterDateProject: boolean;
+  isUpdateProject: boolean;
+  isCreateProject: boolean;
+  isDeleteProject: boolean;
 }

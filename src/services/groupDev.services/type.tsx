@@ -1,3 +1,5 @@
+import { RawProject } from "../project.services/type";
+
 export interface GroupDev {
   id: string;
   name: string;
@@ -8,11 +10,34 @@ export interface GroupDev {
   createdAt: string;
 }
 
+export interface GroupDevDetail {
+  id: string;
+  name: string;
+  description: string | null;
+  visibility: string;
+  maxMembers: number;
+  avatar_url: string | null;
+  currentMembers: number;
+  leader: {
+    id: string;
+    email: string;
+    name: string | null;
+    phone: string | null;
+    address: string | null;
+    gender: string | null;
+    role: string | null;
+    isActive: boolean;
+    avatar_url: string | null;
+    createdAt: string;
+  };
+  createdAt: string;
+}
+
 export interface GroupDevDetailResponse {
   statusCode: number;
   data: {
     message: string;
-    groupDev: GroupDev;
+    groupDev: GroupDevDetail;
   };
   timestamp: string;
   path: string;
@@ -89,4 +114,17 @@ export interface CreateGroupPayload {
   visibility: string;
   maxMembers: string;
   avatar: File | null;
+}
+
+// get all project from groupId
+export interface GetProjectToGroupResponse {
+  statusCode: number;
+  data?: {
+    message: string;
+    projects: RawProject[];
+    countProject: number | null;
+  };
+  message?: string;
+  timestamp: string;
+  path: string;
 }
