@@ -3,6 +3,8 @@ export interface ModalState {
 }
 
 interface ModalUser {
+  // modal avatar
+  isShowModalAvatar: boolean;
   //user
   isFilterDateUser: boolean;
   isUpdateUser: boolean;
@@ -14,8 +16,12 @@ interface ModalUser {
   isUpdateGroup: boolean;
   isCreategroup: boolean;
   isDeleteGroup: boolean;
+  // groupDev detail
+  isShowListMember: boolean;
+  isDeleteMember: boolean;
+  isShowLeaderFromGroup: boolean;
 
-  // groupDev
+  // project
   isFilterDateProject: boolean;
   isUpdateProject: boolean;
   isCreateProject: boolean;

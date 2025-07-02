@@ -32,6 +32,10 @@ const ModalSlice = createSlice({
     setShowModalGroupDelete: (state, action: PayloadAction<boolean>) => {
       state.modalUser.isDeleteGroup = action.payload;
     },
+    // detail groupId
+    setShowListMember: (state, action: PayloadAction<boolean>) => {
+      state.modalUser.isShowListMember = action.payload;
+    },
 
     // project
     setShowModalProjectUpdate: (state, action: PayloadAction<boolean>) => {
@@ -46,10 +50,23 @@ const ModalSlice = createSlice({
     setShowModalProjectDelete: (state, action: PayloadAction<boolean>) => {
       state.modalUser.isDeleteProject = action.payload;
     },
+
+    //avatar detail
+    setShowModalDetailAvatar: (state, action: PayloadAction<boolean>) => {
+      state.modalUser.isShowModalAvatar = action.payload;
+    },
+    setDelateMemberToGroup: (state, action: PayloadAction<boolean>) => {
+      state.modalUser.isDeleteMember = action.payload;
+    },
+    setShowLeaderFromGroup: (state, action: PayloadAction<boolean>) => {
+      state.modalUser.isShowLeaderFromGroup = action.payload;
+    },
   },
 });
 
 export const {
+  // avatar detail
+  setShowModalDetailAvatar,
   //user
   setShowModalUserFilterDate,
   setShowModalUserUpdate,
@@ -61,6 +78,10 @@ export const {
   setShowModalGroupCreate,
   setShowModalGroupUpdate,
   setShowModalGroupDelete,
+  // detail groupId
+  setShowListMember,
+  setDelateMemberToGroup,
+  setShowLeaderFromGroup,
 
   //project
   setShowModalProjectUpdate,

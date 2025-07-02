@@ -11,7 +11,11 @@ import {
 import { InforGroup } from "@/lib/redux/slices/groupDev/type";
 import { CardFlip } from "@/components/ui/CardFlip/CardFlip";
 import { RawProject } from "@/services/project.services/type";
-import UserDetailAvatar from "@/components/avatar/user/detailUser";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { setDetailGroupId } from "@/lib/redux/slices/modal/action";
+import { setInforGroupDev } from "@/lib/redux/slices/groupDev/reducer";
+import ModalDetailMember from "../(modal)/(member)/modalListMember";
+import ModalDetaiLeader from "../(modal)/(leader)/modalDetailLeader";
 
 export default function MainContent() {
   const params = useParams();
@@ -19,45 +23,34 @@ export default function MainContent() {
   const [detailGroup, setDetailGroup] = useState<InforGroup>();
   const [detailProjects, setDetailProjects] = useState<RawProject[]>();
   const [showFullDescription, setShowFullDescription] = useState(false);
-
-  const [showDetailLeader, setShowDetailLeader] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const fetchDetailUser = async () => {
+    const fetchGroupData = async () => {
+      if (!groupId || typeof groupId !== "string") return;
+
       try {
-        if (groupId && typeof groupId === "string") {
-          const res = await GetGroupDetail(groupId);
-          if (res.statusCode === 200) {
-            setDetailGroup(res.data.groupDev);
-          }
+        const [groupRes, projectRes] = await Promise.all([
+          GetGroupDetail(groupId),
+          GetProjectFromGroupId(groupId),
+        ]);
+
+        if (groupRes.statusCode === 200) {
+          setDetailGroup(groupRes.data.groupDev);
+          dispatch(setInforGroupDev(groupRes.data.groupDev));
         }
-      } catch (err) {
-        console.error("Fetch error:", err);
-      }
-    };
-    const fetchCountProjects = async () => {
-      try {
-        if (groupId && typeof groupId === "string") {
-          const res = await GetProjectFromGroupId(groupId);
-          if (res.statusCode === 200) {
-            setDetailProjects(res.data?.projects);
-          }
+
+        if (projectRes.statusCode === 200) {
+          setDetailProjects(projectRes.data?.projects);
         }
       } catch (err) {
         console.error("Fetch error:", err);
       }
     };
 
-    fetchDetailUser();
-    fetchCountProjects();
-  }, [groupId]);
-
-  // hander
-  const handleShowDetailLeader = () => {
-    if (detailGroup?.leader?.id) {
-      setShowDetailLeader(false);
-    }
-  };
+    fetchGroupData();
+  }, [groupId, dispatch, refreshTrigger]);
 
   return (
     <>
@@ -126,13 +119,14 @@ export default function MainContent() {
           title={`Trưởng nhóm:  ${detailGroup?.leader?.id ? "1" : "0"}/1`}
           description="Thông tin về trưởng nhóm và quyền quản lý nhóm."
           imageSrc="/avatar/avatar.png"
-          onClick={() => setShowDetailLeader(true)}
+          onClick={() => dispatch(setDetailGroupId.detailLeader(true))}
         />
 
         <CardFlip
           title={`Thành viên:  ${detailGroup?.currentMembers}/${detailGroup?.maxMembers}`}
           description="Quản lý số lượng và vai trò của các thành viên trong nhóm."
           imageSrc="/avatar/avatar.png"
+          onClick={() => dispatch(setDetailGroupId.listMember(true))}
         />
 
         <CardFlip
@@ -148,12 +142,14 @@ export default function MainContent() {
         />
       </motion.div>
 
-      {showDetailLeader && (
-        <UserDetailAvatar
-          onClose={() => handleShowDetailLeader()}
-          userId={detailGroup?.leader?.id || ""}
-        />
-      )}
+      {/* modal */}
+      <ModalDetailMember
+        onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
+      />
+
+      <ModalDetaiLeader
+        onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
+      />
     </>
   );
 }

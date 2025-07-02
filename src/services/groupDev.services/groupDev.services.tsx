@@ -1,12 +1,24 @@
 import axiosInstance from "@/lib/axios/axios.ts"; // CHÍNH XÁC
 import { isAxiosError } from "axios";
 import {
+  AssignLeaderFromGroupPayload,
+  AssignLeaderFromGroupResponse,
+  ChangeLeaderPayload,
+  ChangeLeaderResponse,
+  DeleteLeaderFromGroupResponse,
+  DeleteMemberFromGroupPayload,
+} from "./type";
+import {
   CreateGroupPayload,
   CreateGroupResponse,
   DeleteGroupResponse,
+  DeleteMemberFromGroupResponse,
   FilterInput,
+  GetListMembersResponse,
   GetProjectToGroupResponse,
   GroupDevDetailResponse,
+  MemberJoinToGroupPayload,
+  MemberJoinToGroupResponse,
   PaginationResponse,
   UpdateGroupPayload,
   UpdateGroupResponse,
@@ -32,7 +44,7 @@ export const GetGroupDetail = async (
 
 export const GetListMembers = async (
   groupId: string
-): Promise<GroupDevDetailResponse> => {
+): Promise<GetListMembersResponse> => {
   try {
     const res = await axiosInstance.get(
       `/group-member/list?groupId=${groupId}`
@@ -167,6 +179,112 @@ export const GetProjectFromGroupId = async (
       console.error("API error response", err.response);
       throw new Error(
         err.response?.data?.message || "Get project to group failed"
+      );
+    } else {
+      throw new Error("An unexpected error occurred");
+    }
+  }
+};
+
+export const PostJoinMember = async (
+  dataMemberJoinToGroup: MemberJoinToGroupPayload
+): Promise<MemberJoinToGroupResponse> => {
+  try {
+    const res = await axiosInstance.post(
+      `/group-member/join`,
+      dataMemberJoinToGroup
+    );
+
+    return res.data;
+  } catch (err) {
+    if (isAxiosError(err)) {
+      console.error("API error response", err.response);
+      throw new Error(
+        err.response?.data?.message || "Join member to group failed"
+      );
+    } else {
+      throw new Error("An unexpected error occurred");
+    }
+  }
+};
+
+export const DeleteMemberFromGroup = async (
+  payload: DeleteMemberFromGroupPayload
+): Promise<DeleteMemberFromGroupResponse> => {
+  try {
+    const res = await axiosInstance.delete(
+      `/group-member/leave?groupId=${payload.groupId}&userId=${payload.userId}`
+    );
+
+    return res.data;
+  } catch (err) {
+    if (isAxiosError(err)) {
+      console.error("API error response", err.response);
+      throw new Error(
+        err.response?.data?.message || "Delete member from group failed"
+      );
+    } else {
+      throw new Error("An unexpected error occurred");
+    }
+  }
+};
+
+export const PatchChangeLeader = async (
+  payload: ChangeLeaderPayload
+): Promise<ChangeLeaderResponse> => {
+  try {
+    const res = await axiosInstance.patch(
+      `/group-leader/change?groupId=${payload.groupId}`,
+      { userId: payload.userId }
+    );
+
+    return res.data;
+  } catch (err) {
+    if (isAxiosError(err)) {
+      console.error("API error response", err.response);
+      throw new Error(err.response?.data?.message || "Update group dev failed");
+    } else {
+      throw new Error("An unexpected error occurred");
+    }
+  }
+};
+
+export const DeleteLeaderFromGroup = async (
+  groupId: string
+): Promise<DeleteLeaderFromGroupResponse> => {
+  try {
+    const res = await axiosInstance.delete(
+      `group-leader/remove?groupId=${groupId}`
+    );
+
+    return res.data;
+  } catch (err) {
+    if (isAxiosError(err)) {
+      console.error("API error response", err.response);
+      throw new Error(
+        err.response?.data?.message || "Delete leader from group failed"
+      );
+    } else {
+      throw new Error("An unexpected error occurred");
+    }
+  }
+};
+
+export const PostAssignLeaderFromGroup = async (
+  dataAssignLeaderFromGroup: AssignLeaderFromGroupPayload
+): Promise<AssignLeaderFromGroupResponse> => {
+  try {
+    const res = await axiosInstance.post(
+      `/group-leader/assign`,
+      dataAssignLeaderFromGroup
+    );
+
+    return res.data;
+  } catch (err) {
+    if (isAxiosError(err)) {
+      console.error("API error response", err.response);
+      throw new Error(
+        err.response?.data?.message || "Join member to group failed"
       );
     } else {
       throw new Error("An unexpected error occurred");

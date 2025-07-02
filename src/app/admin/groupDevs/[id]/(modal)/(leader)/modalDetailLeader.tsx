@@ -1,52 +1,100 @@
 "use client";
 
 import { useAppDispatch } from "@/lib/redux/hooks";
+import { setDetailGroupId } from "@/lib/redux/slices/modal/action";
 import { RootState } from "@/lib/redux/store";
-import { DeleteGroupDev } from "@/services/groupDev.services/groupDev.services";
 import {
   Dialog,
   DialogPanel,
-  DialogTitle,
   Transition,
   TransitionChild,
 } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { setShowModalGroup } from "../../../../lib/redux/slices/modal/action";
+import FormDetailLeader from "./formListLeader";
+import {
+  PatchChangeLeader,
+  PostAssignLeaderFromGroup,
+} from "@/services/groupDev.services/groupDev.services";
 
 type Props = {
   onRefresh: () => void;
 };
 
-export default function ModalDeleteGroupDev({ onRefresh }: Props) {
+export default function ModalDetaiLeader({ onRefresh }: Props) {
   // state redux
   const dispatch = useAppDispatch();
   const isOpen = useSelector(
-    (state: RootState) => state.modal.modalUser.isDeleteGroup
+    (state: RootState) => state.modal.modalUser.isShowLeaderFromGroup
   );
-  const { inforGroup } = useSelector((state: RootState) => state.groupDev);
 
+  const inforGroup = useSelector(
+    (state: RootState) => state.groupDev.inforGroup
+  );
+
+  const [selectionLeader, setSelectionLeader] = useState<string>("");
 
   // handler
   const CloseModal = () => {
-    dispatch(setShowModalGroup.groupDelete(false));
+    dispatch(setDetailGroupId.detailLeader(false));
+    setSelectionLeader("");
   };
 
   const handleSubmit = async () => {
-    if (inforGroup?.id) {
-      try {
-        const res = await DeleteGroupDev(inforGroup.id);
-        if (res.statusCode === 200) {
-          toast.success("Xóa nhóm develop thành công");
-          onRefresh();
-          CloseModal();
+    if (!selectionLeader.trim()) {
+      return toast.error("Người dùng không được để trống");
+    }
+
+    if (!inforGroup?.id) {
+      return toast.error("Nhóm không được để trống");
+    }
+
+    const isAssign = !inforGroup.leader?.id;
+
+    try {
+      let res;
+
+      if (isAssign) {
+        res = await PostAssignLeaderFromGroup({
+          userId: selectionLeader,
+          groupId: inforGroup.id,
+        });
+      } else {
+        res = await PatchChangeLeader({
+          userId: selectionLeader,
+          groupId: inforGroup.id,
+        });
+      }
+
+      if (res.statusCode === 200) {
+        if (isAssign) {
+          toast.success("Thêm trưởng nhóm thành công");
         } else {
-          toast.error(res.message);
+          toast.success("Thay đổi trưởng nhóm thành công");
         }
-      } catch (err) {
-        console.error("Lỗi xóa nhóm develop:", err);
-        toast.error("Đã xảy ra lỗi khi xóa nhóm develop");
+        onRefresh();
+        CloseModal();
+      } else {
+        const msg =
+          res.data?.message ||
+          res.message ||
+          (isAssign
+            ? "Thêm trưởng nhóm thất bại"
+            : "Thay đổi trưởng nhóm thất bại");
+        toast.error(msg);
+      }
+    } catch (err) {
+      console.error(
+        isAssign
+          ? "Lỗi khi thêm trưởng nhóm:"
+          : "Lỗi khi thay đổi trưởng nhóm:",
+        err
+      );
+      if (isAssign) {
+        toast.error("Đã xảy ra lỗi khi thêm trưởng nhóm");
+      } else {
+        toast.error("Đã xảy ra lỗi khi thay đổi trưởng nhóm");
       }
     }
   };
@@ -84,23 +132,17 @@ export default function ModalDeleteGroupDev({ onRefresh }: Props) {
               bg-white dark:bg-[#0f172a] rounded-2xl p-8
               border border-gray-200 dark:border-gray-600 shadow-xl"
               >
-                <DialogTitle className="text-2xl font-bold text-cyan-400 mb-1">
-                  Xóa nhóm develop
-                </DialogTitle>
-                {/* content */}
-                <div className="mt-2">
-                  <p className="text-m text-gray-500">
-                    Bạn có chắn muốn xóa nhóm {inforGroup?.name}
-                  </p>
-                </div>
+                <FormDetailLeader
+                  setSelectionLeader={setSelectionLeader}
+                  onRefresh={onRefresh}
+                />
 
-                {/* button */}
                 <div className="mt-6 flex flex-col sm:flex-row justify-end gap-3">
                   <button
                     className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
                     onClick={handleSubmit}
                   >
-                    Xác Nhận
+                    Lưu thay đổi
                   </button>
                   <button
                     className="px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300"

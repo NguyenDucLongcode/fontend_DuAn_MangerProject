@@ -2,6 +2,8 @@ import { ModalState } from "./type";
 
 export const initialState: ModalState = {
   modalUser: {
+    // avatar
+    isShowModalAvatar: false,
     //user
     isFilterDateUser: false,
     isUpdateUser: false,
@@ -13,6 +15,11 @@ export const initialState: ModalState = {
     isUpdateGroup: false,
     isCreategroup: false,
     isDeleteGroup: false,
+
+    // detail groupId
+    isShowListMember: false,
+    isDeleteMember: false,
+    isShowLeaderFromGroup: false,
 
     // project
     isFilterDateProject: false,

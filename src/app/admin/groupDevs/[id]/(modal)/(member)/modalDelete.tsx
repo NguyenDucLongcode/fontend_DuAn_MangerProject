@@ -1,8 +1,9 @@
 "use client";
 
 import { useAppDispatch } from "@/lib/redux/hooks";
+import { setDetailGroupId } from "@/lib/redux/slices/modal/action";
 import { RootState } from "@/lib/redux/store";
-import { DeleteGroupDev } from "@/services/groupDev.services/groupDev.services";
+import { DeleteMemberFromGroup } from "@/services/groupDev.services/groupDev.services";
 import {
   Dialog,
   DialogPanel,
@@ -13,40 +14,42 @@ import {
 import { Fragment } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { setShowModalGroup } from "../../../../lib/redux/slices/modal/action";
 
 type Props = {
   onRefresh: () => void;
 };
 
-export default function ModalDeleteGroupDev({ onRefresh }: Props) {
+export default function ModalDeleteMember({ onRefresh }: Props) {
   // state redux
   const dispatch = useAppDispatch();
   const isOpen = useSelector(
-    (state: RootState) => state.modal.modalUser.isDeleteGroup
+    (state: RootState) => state.modal.modalUser.isDeleteMember
   );
+  const { inforUser } = useSelector((state: RootState) => state.user);
   const { inforGroup } = useSelector((state: RootState) => state.groupDev);
-
 
   // handler
   const CloseModal = () => {
-    dispatch(setShowModalGroup.groupDelete(false));
+    dispatch(setDetailGroupId.deleteMember(false));
   };
 
   const handleSubmit = async () => {
-    if (inforGroup?.id) {
+    if (inforUser?.id && inforGroup?.id) {
       try {
-        const res = await DeleteGroupDev(inforGroup.id);
+        const res = await DeleteMemberFromGroup({
+          groupId: inforGroup.id,
+          userId: inforUser.id,
+        });
         if (res.statusCode === 200) {
-          toast.success("Xóa nhóm develop thành công");
+          toast.success("Xóa người dùng khỏi nhóm thành công");
           onRefresh();
           CloseModal();
         } else {
           toast.error(res.message);
         }
       } catch (err) {
-        console.error("Lỗi xóa nhóm develop:", err);
-        toast.error("Đã xảy ra lỗi khi xóa nhóm develop");
+        console.error("Lỗi xóa người dùng:", err);
+        toast.error("Đã xảy ra lỗi khi xóa người dùng");
       }
     }
   };
@@ -85,12 +88,12 @@ export default function ModalDeleteGroupDev({ onRefresh }: Props) {
               border border-gray-200 dark:border-gray-600 shadow-xl"
               >
                 <DialogTitle className="text-2xl font-bold text-cyan-400 mb-1">
-                  Xóa nhóm develop
+                  Xóa người dùng
                 </DialogTitle>
                 {/* content */}
                 <div className="mt-2">
                   <p className="text-m text-gray-500">
-                    Bạn có chắn muốn xóa nhóm {inforGroup?.name}
+                    Bạn có chắn muốn xóa người dùng{inforUser?.name}
                   </p>
                 </div>
 
