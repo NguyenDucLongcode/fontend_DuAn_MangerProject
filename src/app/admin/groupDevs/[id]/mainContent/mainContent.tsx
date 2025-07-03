@@ -16,6 +16,7 @@ import { setDetailGroupId } from "@/lib/redux/slices/modal/action";
 import { setInforGroupDev } from "@/lib/redux/slices/groupDev/reducer";
 import ModalDetailMember from "../(modal)/(member)/modalListMember";
 import ModalDetaiLeader from "../(modal)/(leader)/modalDetailLeader";
+import ModalDetailProject from "../(modal)/(project)/modalListProject";
 
 export default function MainContent() {
   const params = useParams();
@@ -133,6 +134,7 @@ export default function MainContent() {
           title={`Dự án:  ${detailProjects?.length}`}
           description="Xem và quản lý các dự án mà nhóm đang tham gia."
           imageSrc="/avatar/avatar.png"
+          onClick={() => dispatch(setDetailGroupId.detailProject(true))}
         />
 
         <CardFlip
@@ -148,6 +150,10 @@ export default function MainContent() {
       />
 
       <ModalDetaiLeader
+        onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
+      />
+
+      <ModalDetailProject
         onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
       />
     </>

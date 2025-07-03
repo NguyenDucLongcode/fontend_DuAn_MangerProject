@@ -15,6 +15,8 @@ import {
   setShowModalDetailAvatar,
   setDelateMemberToGroup,
   setShowLeaderFromGroup,
+  setShowProjectFromGroup,
+  setDeleteProjectFromGroup,
 } from "./reducer";
 
 export const setShowModalUser = {
@@ -35,6 +37,8 @@ export const setDetailGroupId = {
   listMember: setShowListMember,
   deleteMember: setDelateMemberToGroup,
   detailLeader: setShowLeaderFromGroup,
+  detailProject: setShowProjectFromGroup,
+  deleteProject: setDeleteProjectFromGroup,
 };
 
 export const setShowModalProject = {

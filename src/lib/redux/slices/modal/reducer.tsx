@@ -61,6 +61,12 @@ const ModalSlice = createSlice({
     setShowLeaderFromGroup: (state, action: PayloadAction<boolean>) => {
       state.modalUser.isShowLeaderFromGroup = action.payload;
     },
+    setShowProjectFromGroup: (state, action: PayloadAction<boolean>) => {
+      state.modalUser.isShowProjectFromGroup = action.payload;
+    },
+    setDeleteProjectFromGroup: (state, action: PayloadAction<boolean>) => {
+      state.modalUser.isDeleteProjectFromGroup = action.payload;
+    },
   },
 });
 
@@ -82,6 +88,8 @@ export const {
   setShowListMember,
   setDelateMemberToGroup,
   setShowLeaderFromGroup,
+  setShowProjectFromGroup,
+  setDeleteProjectFromGroup,
 
   //project
   setShowModalProjectUpdate,

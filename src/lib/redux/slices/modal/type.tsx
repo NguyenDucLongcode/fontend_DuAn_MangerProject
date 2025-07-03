@@ -20,6 +20,8 @@ interface ModalUser {
   isShowListMember: boolean;
   isDeleteMember: boolean;
   isShowLeaderFromGroup: boolean;
+  isShowProjectFromGroup: boolean;
+  isDeleteProjectFromGroup: boolean;
 
   // project
   isFilterDateProject: boolean;

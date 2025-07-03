@@ -20,6 +20,8 @@ export const initialState: ModalState = {
     isShowListMember: false,
     isDeleteMember: false,
     isShowLeaderFromGroup: false,
+    isShowProjectFromGroup: false,
+    isDeleteProjectFromGroup: false,
 
     // project
     isFilterDateProject: false,
