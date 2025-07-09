@@ -17,6 +17,10 @@ import {
   setShowLeaderFromGroup,
   setShowProjectFromGroup,
   setDeleteProjectFromGroup,
+  setShowModalSubscriptiontUpdate,
+  setShowModalSubscriptionCreate,
+  setShowModalSubscriptionFilterDate,
+  setShowModalSubscriptionDelete,
 } from "./reducer";
 
 export const setShowModalUser = {
@@ -46,6 +50,13 @@ export const setShowModalProject = {
   projectCreate: setShowModalProjectCreate,
   filterDate: setShowModalProjectFilterDate,
   projectDelete: setShowModalProjectDelete,
+};
+
+export const setShowModalSubscription = {
+  update: setShowModalSubscriptiontUpdate,
+  create: setShowModalSubscriptionCreate,
+  filterDate: setShowModalSubscriptionFilterDate,
+  delete: setShowModalSubscriptionDelete,
 };
 
 export const setShowAvatarDetail = {

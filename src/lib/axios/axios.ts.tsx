@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { InternalAxiosRequestConfig } from "axios";
 import NProgress from "nprogress";
 import { useDeviceStore } from "../deviceStore";
 import { store } from "@/lib/redux/store";
@@ -9,11 +9,28 @@ import { findUserFromToken } from "@/utils/token/decodeTokenFindUser";
 import { isTokenExpired } from "@/utils/token/jwt";
 
 let isRefreshing = false;
-// config NProgress
+let failedQueue: {
+  resolve: (value?: unknown) => void;
+  reject: (error: unknown) => void;
+}[] = [];
+
+// Cấu hình NProgress
 NProgress.configure({
   showSpinner: false,
   trickleSpeed: 100,
 });
+
+// Hàm xử lý hàng đợi khi token đã có
+const processQueue = (error: unknown, token: string | null = null) => {
+  failedQueue.forEach(({ resolve, reject }) => {
+    if (token) {
+      resolve(token);
+    } else {
+      reject(error);
+    }
+  });
+  failedQueue = [];
+};
 
 const axiosInstance = axios.create({
   baseURL:
@@ -24,20 +41,38 @@ const axiosInstance = axios.create({
 
 // Request Interceptor
 axiosInstance.interceptors.request.use(async (config) => {
-  let token: string | null = store.getState().auth?.access_token;
+  let token = store.getState().auth?.access_token;
 
-  // Nếu token tồn tại nhưng đã hết hạn → refresh
   if (token && isTokenExpired(token)) {
-    try {
-      const res = await refresh_token();
-      if (res.statusCode === 200) {
-        token = res.data.access_token;
-        const user = await findUserFromToken(token);
-        store.dispatch(login({ access_token: token, user }));
+    if (!isRefreshing) {
+      isRefreshing = true;
+      try {
+        const res = await refresh_token();
+        if (res.statusCode === 200) {
+          token = res.data.access_token;
+          const user = await findUserFromToken(token);
+          store.dispatch(login({ access_token: token, user }));
+          processQueue(null, token);
+        }
+      } catch (err) {
+        processQueue(err, null);
+        console.error("Token refresh thất bại (request)", err);
+      } finally {
+        isRefreshing = false;
       }
-    } catch (err) {
-      console.error("Token refresh thất bại", err);
     }
+
+    return new Promise<InternalAxiosRequestConfig>((resolve, reject) => {
+      failedQueue.push({
+        resolve: (newToken) => {
+          if (newToken && typeof newToken === "string") {
+            config.headers.Authorization = `Bearer ${newToken}`;
+          }
+          resolve(config);
+        },
+        reject: (err) => reject(err),
+      });
+    });
   }
 
   if (token) {
@@ -63,33 +98,49 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config;
     const status = error.response?.status;
 
-    // Nếu 401 và chưa refresh
+    // Nếu 401/403 và chưa retry
     if (
       (status === 401 || status === 403) &&
       !originalRequest._retry &&
-      !isRefreshing
+      !originalRequest._retryingWithNewToken
     ) {
       originalRequest._retry = true;
-      isRefreshing = true;
 
-      try {
-        const res = await refresh_token();
-        if (res.statusCode === 200) {
-          const { access_token } = res.data;
-          const user = await findUserFromToken(access_token);
-          store.dispatch(login({ access_token, user }));
-
-          // Cập nhật header token mới cho request cũ và retry
-          originalRequest.headers.Authorization = `Bearer ${access_token}`;
-          return axiosInstance(originalRequest);
+      if (!isRefreshing) {
+        isRefreshing = true;
+        try {
+          const res = await refresh_token();
+          if (res.statusCode === 200) {
+            const { access_token } = res.data;
+            const user = await findUserFromToken(access_token);
+            store.dispatch(login({ access_token, user }));
+            processQueue(null, access_token);
+            originalRequest.headers.Authorization = `Bearer ${access_token}`;
+            return axiosInstance(originalRequest);
+          }
+        } catch (err) {
+          processQueue(err, null);
+          console.error("Token refresh thất bại (response)", err);
+        } finally {
+          isRefreshing = false;
         }
-      } catch (err) {
-        console.error("Token refresh thất bại", err);
-        // Có thể redirect về login nếu muốn
-      } finally {
-        isRefreshing = false;
       }
+
+      // Nếu đang refresh → chờ token rồi retry
+      return new Promise((resolve, reject) => {
+        failedQueue.push({
+          resolve: (newToken) => {
+            if (newToken && typeof newToken === "string") {
+              originalRequest.headers.Authorization = `Bearer ${newToken}`;
+              originalRequest._retryingWithNewToken = true;
+            }
+            resolve(axiosInstance(originalRequest));
+          },
+          reject: (err) => reject(err),
+        });
+      });
     }
+
     // Các lỗi khác
     if (status === 400) toast.error("Yêu cầu không hợp lệ!");
     if (status === 403) toast.error("Bạn không có quyền truy cập!");

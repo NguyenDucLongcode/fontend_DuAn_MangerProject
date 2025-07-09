@@ -67,6 +67,26 @@ const ModalSlice = createSlice({
     setDeleteProjectFromGroup: (state, action: PayloadAction<boolean>) => {
       state.modalUser.isDeleteProjectFromGroup = action.payload;
     },
+
+    // Subscription
+    setShowModalSubscriptiontUpdate: (
+      state,
+      action: PayloadAction<boolean>
+    ) => {
+      state.modalUser.isUpdateSubscription = action.payload;
+    },
+    setShowModalSubscriptionCreate: (state, action: PayloadAction<boolean>) => {
+      state.modalUser.isCreateSubscription = action.payload;
+    },
+    setShowModalSubscriptionFilterDate: (
+      state,
+      action: PayloadAction<boolean>
+    ) => {
+      state.modalUser.isFilterDateSubscription = action.payload;
+    },
+    setShowModalSubscriptionDelete: (state, action: PayloadAction<boolean>) => {
+      state.modalUser.isDeleteSubscription = action.payload;
+    },
   },
 });
 
@@ -96,5 +116,11 @@ export const {
   setShowModalProjectCreate,
   setShowModalProjectFilterDate,
   setShowModalProjectDelete,
+
+  // subscription
+  setShowModalSubscriptiontUpdate,
+  setShowModalSubscriptionCreate,
+  setShowModalSubscriptionFilterDate,
+  setShowModalSubscriptionDelete,
 } = ModalSlice.actions;
 export default ModalSlice.reducer;

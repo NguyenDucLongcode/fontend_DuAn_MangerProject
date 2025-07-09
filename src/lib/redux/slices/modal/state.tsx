@@ -28,5 +28,11 @@ export const initialState: ModalState = {
     isUpdateProject: false,
     isCreateProject: false,
     isDeleteProject: false,
+
+    // subscription
+    isFilterDateSubscription: false,
+    isUpdateSubscription: false,
+    isCreateSubscription: false,
+    isDeleteSubscription: false,
   },
 };

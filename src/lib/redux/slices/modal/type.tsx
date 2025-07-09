@@ -28,4 +28,10 @@ interface ModalUser {
   isUpdateProject: boolean;
   isCreateProject: boolean;
   isDeleteProject: boolean;
+
+  // subscription
+  isFilterDateSubscription: boolean;
+  isUpdateSubscription: boolean;
+  isCreateSubscription: boolean;
+  isDeleteSubscription: boolean;
 }
